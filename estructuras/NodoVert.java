@@ -1,5 +1,4 @@
-
-
+package estructuras;
 public class NodoVert {
     //atributos
     private Object elem;

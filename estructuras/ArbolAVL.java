@@ -1,5 +1,4 @@
-package "";
-
+package estructuras;
 public class ArbolAVL {
     private NodoAVL raiz;
 
