@@ -1,0 +1,30 @@
+C;1000;Buenos Aires;Buenos Aires
+C;2000;Rosario;Santa Fe
+C;3000;Santa Fe;Santa Fe
+C;4000;San Miguel de Tucuman;Tucuman
+C;5000;Cordoba;Cordoba
+C;6000;Mendoza;Mendoza
+C;7000;La Plata;Buenos Aires
+C;8000;Mar del Plata;Buenos Aires
+C;9000;Salta;Salta
+C;1001;Retiro;Buenos Aires
+C;1100;Congreso;Buenos Aires
+C;1200;San Telmo;Buenos Aires
+C;1300;Belgrano;Buenos Aires
+C;1400;Recoleta;Buenos Aires
+C;1500;Palermo;Buenos Aires
+C;1600;Almagro;Buenos Aires
+C;1700;Caballito;Buenos Aires
+C;1800;Flores;Buenos Aires
+C;1900;Boedo;Buenos Aires
+C;2001;Centro;Rosario
+C;2100;Fisherton;Rosario
+C;2200;Rio Cuarto;Cordoba
+C;2300;Santa Rosa de Calamuchita;Cordoba
+C;2400;San Francisco;Cordoba
+C;2500;Venado Tuerto;Santa Fe
+C;2600;Rafaela;Santa Fe
+C;2700;Esperanza;Santa Fe
+C;2800;San Juan;San Juan
+C;2900;Formosa;Formosa
+C;3001;Granadero Baigorria;Santa Fe
