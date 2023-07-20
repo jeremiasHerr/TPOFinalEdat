@@ -1,4 +1,5 @@
 package estructuras;
+import tpo.Ciudad;
 public class GrafoEtiquetado {
     //atributo
     private NodoVert inicio;
@@ -355,13 +356,13 @@ public class GrafoEtiquetado {
     private NodoVert ubicarVertice(Object buscado) {
         // aux que se usa para ver si ya existe el nuevo vertice a ingresar
         NodoVert aux = this.inicio;
-        while (aux != null && !aux.getElem().equals(buscado)) {
+        while (aux != null && !aux.getElem().getCodigoPostal().equals(buscado)) {
             aux = aux.getSigVertice();
         }
         return aux;
     }
 
-    public boolean insertarVertice(Object nuevoVertice) {
+    public boolean insertarVertice(Ciudad nuevoVertice) {
         boolean exito = false;
         NodoVert aux = this.ubicarVertice(nuevoVertice);
         if (aux == null) {
@@ -370,5 +371,4 @@ public class GrafoEtiquetado {
         }
         return exito;
     }
-
 }

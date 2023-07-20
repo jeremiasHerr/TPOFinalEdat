@@ -1,3 +1,4 @@
+package estructuras;
 public class NodoAVL {
     private Comparable elem;
     private int altura = 0;

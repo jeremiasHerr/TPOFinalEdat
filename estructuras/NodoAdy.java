@@ -1,29 +1,29 @@
 package estructuras;
-public class SolicitudViaje {
+public class NodoAdy {
     //atributos
-    private Ciudad vertice;
-    private SolicitudViaje sigAdyacente;
+    private NodoVert vertice;
+    private NodoAdy sigAdyacente;
     private double etiqueta;
 
-    public SolicitudViaje(Ciudad unVertice, SolicitudViaje unSigAdyacente, double unaEtiqueta) {
+    public NodoAdy(NodoVert unVertice, NodoAdy unSigAdyacente, double unaEtiqueta) {
         this.vertice = unVertice;
         this.sigAdyacente = unSigAdyacente;
         this.etiqueta = unaEtiqueta;
     }
     
-    public Ciudad getVertice() {
+    public NodoVert getVertice() {
         return this.vertice;
     }
     
-    public void setVertice(Ciudad vertice) {
+    public void setVertice(NodoVert vertice) {
         this.vertice = vertice;
     }
     
-    public SolicitudViaje getSigAdyacente() {
+    public NodoAdy getSigAdyacente() {
         return this.sigAdyacente;
     }
     
-    public void setSigAdyacente(SolicitudViaje sigAdyacente) {
+    public void setSigAdyacente(NodoAdy sigAdyacente) {
         this.sigAdyacente = sigAdyacente;
     }
     

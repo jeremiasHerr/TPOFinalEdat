@@ -1,20 +1,18 @@
-package tpo;
+package estructuras;
 
-import estructuras.Cola;
-import estructuras.Lista;
-//originalmente grafo no etiquetado
-public class Pedidos {
+//este grafo va a servir como estructura para los pedidos entre ciudades
+public class GrafoMod {
     //atributo
-    private Ciudad inicio;
+    private NodoVertMod inicio;
 
-    public Pedidos() {
+    public GrafoMod() {
         this.inicio = null;
     }
 
     public Lista caminoMasLargo(Object origen, Object destino){
         Lista resultado = new Lista();
-        Ciudad nOrigen = ubicarVertice(origen);
-        Ciudad nDestino = ubicarVertice(destino);
+        NodoVertMod nOrigen = ubicarVertice(origen);
+        NodoVertMod nDestino = ubicarVertice(destino);
         if(nOrigen!=null && nDestino!=null){
             Lista visitados = new Lista(), listaAux = new Lista();
             resultado = caminoMasLargoAux(nOrigen, destino, resultado, listaAux, visitados);
@@ -22,7 +20,7 @@ public class Pedidos {
         return resultado;
     }
 
-    private Lista caminoMasLargoAux(Ciudad nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
+    private Lista caminoMasLargoAux(NodoVertMod nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
         if (nAux != null){
             Object elem = nAux.getElem();
             visitados.insertar(elem, visitados.longitud()+1);
@@ -33,7 +31,7 @@ public class Pedidos {
                     resultado = listaAux.clone();
                 }
             } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
-                SolicitudViaje ady = nAux.getPrimerAdy();
+                NodoAdyMod ady = nAux.getPrimerAdy();
                 while (ady != null){
                     if (visitados.localizar(ady.getVertice().getElem()) < 0){
                         resultado = caminoMasLargoAux(ady.getVertice(), destino, resultado, listaAux, visitados); 
@@ -50,8 +48,8 @@ public class Pedidos {
 
     public Lista caminoMasCorto(Object origen, Object destino){
         Lista resultado = new Lista();
-        Ciudad nOrigen = ubicarVertice(origen);
-        Ciudad nDestino = ubicarVertice(destino);
+        NodoVertMod nOrigen = ubicarVertice(origen);
+        NodoVertMod nDestino = ubicarVertice(destino);
         if(nOrigen!=null && nDestino!=null){
             Lista visitados = new Lista(), listaAux = new Lista();
             resultado = caminoMasCortoAux(nOrigen, destino, resultado, listaAux, visitados);
@@ -59,7 +57,7 @@ public class Pedidos {
         return resultado;
     }
 
-    private Lista caminoMasCortoAux(Ciudad nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
+    private Lista caminoMasCortoAux(NodoVertMod nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
         if (nAux != null){
             Object elem = nAux.getElem();
             visitados.insertar(elem, visitados.longitud()+1);
@@ -70,7 +68,7 @@ public class Pedidos {
                     resultado = listaAux.clone();
                 }
             } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
-                SolicitudViaje ady = nAux.getPrimerAdy();
+                NodoAdyMod ady = nAux.getPrimerAdy();
                 while (ady != null){
                     if (visitados.localizar(ady.getVertice().getElem()) < 0){
                         resultado = caminoMasCortoAux(ady.getVertice(), destino, resultado, listaAux, visitados); 
@@ -86,7 +84,7 @@ public class Pedidos {
 
     public Lista listarEnAnchura(){
         Lista visitados = new Lista();
-        Ciudad aux = this.inicio;
+        NodoVertMod aux = this.inicio;
         while(aux!=null){
             if(visitados.localizar(aux.getElem()) < 0){
                 listarEnAnchuraAux(aux, visitados);
@@ -96,14 +94,14 @@ public class Pedidos {
         return visitados;
     }
 
-    private void listarEnAnchuraAux(Ciudad nodo, Lista visitados){
+    private void listarEnAnchuraAux(NodoVertMod nodo, Lista visitados){
         Cola nodosCola = new Cola();
         visitados.insertar(nodo.getElem(), visitados.longitud() + 1);
         nodosCola.poner(nodo);
         while(!nodosCola.esVacia()){
-            Ciudad aux = (Ciudad) nodosCola.obtenerFrente();
+            NodoVertMod aux = (NodoVertMod) nodosCola.obtenerFrente();
             nodosCola.sacar();
-            SolicitudViaje ady = aux.getPrimerAdy();
+            NodoAdyMod ady = aux.getPrimerAdy();
             while(ady!=null){
                 if(visitados.localizar(ady.getVertice().getElem()) < 0){
                     visitados.insertar(ady.getVertice().getElem(), visitados.longitud() + 1);
@@ -116,7 +114,7 @@ public class Pedidos {
 
     public Lista listarEnProfundidad(){
         Lista visitados = new Lista();
-        Ciudad aux = this.inicio;
+        NodoVertMod aux = this.inicio;
         while(aux!=null){
             if(visitados.localizar(aux.getElem()) < 0){
                 listarEnProfundidadAux(aux, visitados);
@@ -126,10 +124,10 @@ public class Pedidos {
         return visitados;
     }
 
-    private void listarEnProfundidadAux (Ciudad nAux, Lista visitados) {
+    private void listarEnProfundidadAux (NodoVertMod nAux, Lista visitados) {
         if(nAux!=null){
             visitados.insertar(nAux.getElem(), visitados.longitud()+1);
-            SolicitudViaje nAdy = nAux.getPrimerAdy();
+            NodoAdyMod nAdy = nAux.getPrimerAdy();
             while(nAdy!=null){
                 if(visitados.localizar(nAdy.getVertice().getElem()) < 0){
                     listarEnProfundidadAux(nAdy.getVertice(), visitados);
@@ -150,11 +148,11 @@ public class Pedidos {
         return resultado;
     }
 
-    private String toStringAux(Ciudad vertice) {
+    private String toStringAux(NodoVertMod vertice) {
         String cadena = "";
         if(vertice != null) {
             cadena = cadena + vertice.getElem().toString() + " | Adyacentes: ";
-            SolicitudViaje ady = vertice.getPrimerAdy();
+            NodoAdyMod ady = vertice.getPrimerAdy();
             while(ady != null) {
                 if(ady.getSigAdyacente() != null) {
                     cadena = cadena + ady.getVertice().getElem().toString() + ", ";
@@ -171,8 +169,8 @@ public class Pedidos {
     public boolean existeCamino (Object origen, Object destino) {
         boolean exito = false;
         if (!origen.equals(destino) && this.inicio != null) {
-             Ciudad nOrigen = ubicarVertice(origen);
-            Ciudad nDestino = ubicarVertice(destino);
+            NodoVertMod nOrigen = ubicarVertice(origen);
+            NodoVertMod nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
                 Lista visitados = new Lista();
                 exito = existeCaminoAux(nOrigen, destino, visitados);
@@ -181,14 +179,14 @@ public class Pedidos {
        return exito;
     }
 
-    private boolean existeCaminoAux (Ciudad nAux, Object destino, Lista visitados) {
+    private boolean existeCaminoAux (NodoVertMod nAux, Object destino, Lista visitados) {
         boolean exito = false;
         if(nAux!=null){
             if(nAux.getElem().equals(destino)){
                 exito = true;
             } else {
                 visitados.insertar(nAux.getElem(), visitados.longitud()+1);
-                SolicitudViaje aux = nAux.getPrimerAdy();
+                NodoAdyMod aux = nAux.getPrimerAdy();
                 while(!exito && aux!=null){
                     if(visitados.localizar(aux.getVertice().getElem())<0){
                         exito = existeCaminoAux(aux.getVertice(), destino, visitados);
@@ -208,17 +206,17 @@ public class Pedidos {
         return this.inicio==null;
     }
 
-    public boolean existeSolicitud (Object origen, Object destino){
+    public boolean existeArco (Object origen, Object destino){
         boolean encontrado = false;
         if (!origen.equals(destino) && this.inicio != null) {
-            Ciudad nOrigen = ubicarVertice(origen);
-            Ciudad nDestino = ubicarVertice(destino);
+            NodoVertMod nOrigen = ubicarVertice(origen);
+            NodoVertMod nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
                 if (nOrigen.getPrimerAdy().getVertice() == nDestino) {
                     nOrigen.setPrimerAdy(nOrigen.getPrimerAdy().getSigAdyacente());
                     encontrado = true;
                 } else {
-                    SolicitudViaje aux = nOrigen.getPrimerAdy();
+                    NodoAdyMod aux = nOrigen.getPrimerAdy();
                     while(aux!=null && !encontrado){
                         encontrado = aux.getVertice().getElem().equals(nDestino.getElem());
                         aux = aux.getSigAdyacente();
@@ -229,11 +227,11 @@ public class Pedidos {
         return encontrado;
     }
 
-    public boolean eliminarSolicitud(Object origen, Object destino) {
+    public boolean eliminarArco(Object origen, Object destino) {
         boolean exito = false, encontrado = false;
         if (!origen.equals(destino) && this.inicio != null) {
-            Ciudad nOrigen = ubicarVertice(origen);
-            Ciudad nDestino = ubicarVertice(destino);
+            NodoVertMod nOrigen = ubicarVertice(origen);
+            NodoVertMod nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
                 // Si es el primer adyacente lo borro, sino busco en todos los adyacentes si
                 // existe el arco
@@ -241,7 +239,7 @@ public class Pedidos {
                     nOrigen.setPrimerAdy(nOrigen.getPrimerAdy().getSigAdyacente());
                     encontrado = true;
                 } else {
-                    SolicitudViaje aux = nOrigen.getPrimerAdy();
+                    NodoAdyMod aux = nOrigen.getPrimerAdy();
                     boolean salir = false;
                     while (aux != null && !salir) {
                         if (aux.getSigAdyacente().getVertice() == nDestino) {
@@ -258,7 +256,7 @@ public class Pedidos {
                 }
                 // Ahora queda eliminarlo desde el destino al origen, ya que es un grafo no dirigido y los
                 // arcos van en ambos sentidos
-                SolicitudViaje aux2 = nDestino.getPrimerAdy();
+                NodoAdyMod aux2 = nDestino.getPrimerAdy();
                 boolean salir2 = false;
                 if(encontrado){
                     if (nDestino.getPrimerAdy().getVertice() == nOrigen) {
@@ -283,15 +281,15 @@ public class Pedidos {
         }
         return exito;
     }
-    //insertarArco
-    public boolean agregarSolicitud(Object origen, Object destino, double unaEtiqueta) {
+
+    public boolean insertarArco(Object origen, Object destino, Object unaEtiqueta) {
         boolean exito = false;
         if (!origen.equals(destino) && this.inicio != null) {
-            Ciudad nOrigen = ubicarVertice(origen);
-            Ciudad nDestino = ubicarVertice(destino);
+            NodoVertMod nOrigen = ubicarVertice(origen);
+            NodoVertMod nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
-                nOrigen.setPrimerAdy(new SolicitudViaje(nDestino, nOrigen.getPrimerAdy()));
-                nDestino.setPrimerAdy(new SolicitudViaje(nOrigen, nDestino.getPrimerAdy()));
+                nOrigen.setPrimerAdy(new NodoAdyMod(nDestino, nOrigen.getPrimerAdy(), unaEtiqueta));
+                nDestino.setPrimerAdy(new NodoAdyMod(nOrigen, nDestino.getPrimerAdy(), unaEtiqueta));
                 exito = true;
             }
         }
@@ -301,7 +299,7 @@ public class Pedidos {
     public boolean existeVertice(Object unVertice) {
         boolean exito = false;
         if (inicio != null) {
-            Ciudad aux = this.inicio;
+            NodoVertMod aux = this.inicio;
             while (aux != null && !exito) {
                 aux = aux.getSigVertice();
                 exito = aux.getElem().equals(unVertice);
@@ -319,7 +317,7 @@ public class Pedidos {
                 this.inicio = inicio.getSigVertice();
                 exito = true;
             } else {
-                Ciudad aux = this.inicio;
+                NodoVertMod aux = this.inicio;
                 while (aux != null && !exito) {
                     if (aux.getSigVertice().getElem().equals(unVertice)) {
                         //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
@@ -335,10 +333,10 @@ public class Pedidos {
         return exito;
     }
 
-    private void eliminarAdyacentesDe (SolicitudViaje nAux, Object unVertice){
+    private void eliminarAdyacentesDe (NodoAdyMod nAux, Object unVertice){
         //este modulo elimina los adyacentes que tengan como destino a unVertice
         while(nAux!=null){
-            SolicitudViaje aux = nAux.getVertice().getPrimerAdy();
+            NodoAdyMod aux = nAux.getVertice().getPrimerAdy();
             if(aux.getVertice().getElem().equals(unVertice)){
                 nAux.getVertice().setPrimerAdy(aux.getSigAdyacente());
             } else {
@@ -356,9 +354,9 @@ public class Pedidos {
         }
     }        
 
-    private Ciudad ubicarVertice(Object buscado) {
+    private NodoVertMod ubicarVertice(Object buscado) {
         // aux que se usa para ver si ya existe el nuevo vertice a ingresar
-        Ciudad aux = this.inicio;
+        NodoVertMod aux = this.inicio;
         while (aux != null && !aux.getElem().equals(buscado)) {
             aux = aux.getSigVertice();
         }
@@ -367,9 +365,9 @@ public class Pedidos {
 
     public boolean insertarVertice(Object nuevoVertice) {
         boolean exito = false;
-        Ciudad aux = this.ubicarVertice(nuevoVertice);
+        NodoVertMod aux = this.ubicarVertice(nuevoVertice);
         if (aux == null) {
-            this.inicio = new Ciudad(nuevoVertice, this.inicio);
+            this.inicio = new NodoVertMod(nuevoVertice, this.inicio);
             exito = true;
         }
         return exito;

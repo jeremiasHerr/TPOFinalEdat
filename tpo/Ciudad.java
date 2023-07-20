@@ -1,41 +1,41 @@
 package tpo;
-
-import estructuras.NodoAdy;
-import estructuras.NodoVert;
-//originalmente NodoVert
 public class Ciudad {
-    //atributos
-    private Object nombreCiudad;
-    private Ciudad sigCiudad;
-    private SolicitudViaje primerSolicitud;
+    private String codigoPostal;
+    private String nombre;
+    private String provincia;
 
-    public Ciudad (Object unElem, Ciudad unVertice){
-        this.nombreCiudad = unElem;
-        this.sigCiudad = unVertice;
-        this.primerSolicitud = null;
+    public Ciudad() {
+
     }
 
-     public Object getElem(){
-        return this.nombreCiudad;
+    public Ciudad(String codigoPostal, String nombre, String provincia) {
+        this.codigoPostal = codigoPostal;
+        this.nombre = nombre;
+        this.provincia = provincia;
     }
 
-    public void setElem(Object unElem){
-        this.nombreCiudad = unElem;
+    public String getCodigoPostal(){
+        return codigoPostal;
     }
 
-    public Ciudad getSigVertice(){
-        return this.sigCiudad;
+    public String getNombre() {
+        return nombre;
     }
 
-    public void setSigVertice(Ciudad unaCiudad){
-        this.sigCiudad = unaCiudad;
+    public void setNombre(String nombre) {
+        this.nombre = nombre;
     }
 
-    public SolicitudViaje getPrimerAdy(){
-        return this.primerSolicitud;
+    public String getProvincia() {
+        return provincia;
     }
 
-    public void setPrimerAdy(SolicitudViaje unaSolicitudViaje){
-        this.primerSolicitud = unaSolicitudViaje;
+    public void setProvincia(String provincia) {
+        this.provincia = provincia;
     }
+
+    public String toString(){
+        return "CP: " + this.codigoPostal + ", Ciudad: " + this.nombre + " de la provincia de: " + this.provincia;
+    }
+
 }
