@@ -4,7 +4,6 @@ public class NodoAdyMod {
      //atributos
      private NodoVertMod vertice;
      private NodoAdyMod sigAdyacente;
-     //le agrego esta variable para almacenar las solicitudes que tengan
      private Object solicitud;
  
      public NodoAdyMod(NodoVertMod unVertice, NodoAdyMod unSigAdyacente, Object unaSolicitud) {

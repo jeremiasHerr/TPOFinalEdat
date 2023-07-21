@@ -317,7 +317,7 @@ public class GrafoEtiquetado {
                 exito = true;
             } else {
                 NodoVert aux = this.inicio;
-                while (aux != null && !exito) {
+                while (aux.getSigVertice() != null && !exito) {
                     if (aux.getSigVertice().getElem().equals(unVertice)) {
                         //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
                         eliminarAdyacentesDe(aux.getSigVertice().getPrimerAdy(), unVertice);
@@ -340,7 +340,7 @@ public class GrafoEtiquetado {
                 nAux.getVertice().setPrimerAdy(aux.getSigAdyacente());
             } else {
                 boolean salir = false;
-                while(aux!=null && !salir){
+                while(aux.getSigAdyacente()!=null && !salir){
                     if(aux.getSigAdyacente().getVertice().getElem().equals(unVertice)){
                         aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
                         salir = true;

@@ -1,11 +1,11 @@
 package estructuras;
 
 public class NodoAVLDicc {
-    Comparable clave;
-    Object dato;
-    int altura;
-    NodoAVLDicc hijoIzquierdo;
-    NodoAVLDicc hijoDerecho;
+    private Comparable clave;
+    private Object dato;
+    private int altura;
+    private NodoAVLDicc hijoIzquierdo;
+    private NodoAVLDicc hijoDerecho;
 
     public NodoAVLDicc(Comparable unaClave, Object unDato, NodoAVLDicc unHijoIzq, NodoAVLDicc unHijoDer){
         this.clave = unaClave;

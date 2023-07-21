@@ -1,5 +1,7 @@
 package tpo;
 public class SolicitudViaje {
+    private String ciudadDestino;
+    private String ciudadOrigen;
     private String fechaSolicitud;
     private String tipoDocumento;
     private int numeroDocumento;
@@ -13,7 +15,7 @@ public class SolicitudViaje {
     }
 
     public SolicitudViaje(String fechaSolicitud, String tipoDocumento, int numeroDocumento, int cantMetrosCubicos, 
-                        int cantBultos, String direccionRetiro, String domicilioEntrega, boolean estaPago) {
+                        int cantBultos, String direccionRetiro, String domicilioEntrega, boolean estaPago, String destino,String origen) {
         this.fechaSolicitud = fechaSolicitud;
         this.tipoDocumento = tipoDocumento;
         this.numeroDocumento = numeroDocumento;
@@ -22,6 +24,8 @@ public class SolicitudViaje {
         this.direccionRetiro = direccionRetiro;
         this.domicilioEntrega = domicilioEntrega;
         this.estaPago = estaPago;
+        this.ciudadDestino = destino;
+        this.ciudadOrigen = origen;
     }
 
     // Setters
@@ -58,6 +62,15 @@ public class SolicitudViaje {
     }
 
     // Getters
+
+    public String ciudadOrigen(){
+        return ciudadOrigen;
+    }
+
+    public String ciudadDestino(){
+        return ciudadDestino;
+    }
+
     public String getFechaSolicitud() {
         return fechaSolicitud;
     }

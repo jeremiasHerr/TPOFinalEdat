@@ -1,22 +1,24 @@
 package estructuras;
 
+import tpo.Ciudad;
+
 public class NodoVertMod {
     //atributos
-    private Object elem;
+    private Ciudad elem;
     private NodoVertMod sigVertice;
     private NodoAdyMod primerAdy;
 
-    public NodoVertMod (Object unElem, NodoVertMod unVertice){
+    public NodoVertMod (Ciudad unElem, NodoVertMod unVertice){
         this.elem = unElem;
         this.sigVertice = unVertice;
         this.primerAdy = null;
     }
 
-    public Object getElem(){
+    public Ciudad getElem(){
         return this.elem;
     }
 
-    public void setElem(Object unElem){
+    public void setElem(Ciudad unElem){
         this.elem = unElem;
     }
 

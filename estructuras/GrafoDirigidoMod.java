@@ -1,11 +1,14 @@
 package estructuras;
 
+import tpo.Ciudad;
+
 //este grafo va a servir como estructura para los pedidos entre ciudades
-public class GrafoMod {
+//le puse mod porque los nodos adyacentes guardan etiqueta Object
+public class GrafoDirigidoMod {
     //atributo
     private NodoVertMod inicio;
 
-    public GrafoMod() {
+    public GrafoDirigidoMod() {
         this.inicio = null;
     }
 
@@ -228,7 +231,7 @@ public class GrafoMod {
     }
 
     public boolean eliminarArco(Object origen, Object destino) {
-        boolean exito = false, encontrado = false;
+        boolean exito = false;
         if (!origen.equals(destino) && this.inicio != null) {
             NodoVertMod nOrigen = ubicarVertice(origen);
             NodoVertMod nDestino = ubicarVertice(destino);
@@ -237,7 +240,7 @@ public class GrafoMod {
                 // existe el arco
                 if (nOrigen.getPrimerAdy().getVertice() == nDestino) {
                     nOrigen.setPrimerAdy(nOrigen.getPrimerAdy().getSigAdyacente());
-                    encontrado = true;
+                    exito = true;
                 } else {
                     NodoAdyMod aux = nOrigen.getPrimerAdy();
                     boolean salir = false;
@@ -251,32 +254,9 @@ public class GrafoMod {
                     // Si aux es distinto de null significa que lo encontró al adyacente
                     if (aux != null) {
                         aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
-                        encontrado = true;
+                        exito = true;
                     }
                 }
-                // Ahora queda eliminarlo desde el destino al origen, ya que es un grafo no dirigido y los
-                // arcos van en ambos sentidos
-                NodoAdyMod aux2 = nDestino.getPrimerAdy();
-                boolean salir2 = false;
-                if(encontrado){
-                    if (nDestino.getPrimerAdy().getVertice() == nOrigen) {
-                        nDestino.setPrimerAdy(nDestino.getPrimerAdy().getSigAdyacente());
-                    } else {
-                        while (aux2 != null && !salir2) {
-                            if (aux2.getSigAdyacente().getVertice() == nOrigen) {
-                                salir2 = true;
-                            } else {
-                                aux2 = aux2.getSigAdyacente();
-                            }
-                        }
-                        // Si aux es distinto de null significa que lo encontró al adyacente
-                        if (aux2 != null) {
-                            aux2.setSigAdyacente(aux2.getSigAdyacente().getSigAdyacente());
-                            exito = true;
-                        }
-                    }
-                }
-                
             }
         }
         return exito;
@@ -289,7 +269,6 @@ public class GrafoMod {
             NodoVertMod nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
                 nOrigen.setPrimerAdy(new NodoAdyMod(nDestino, nOrigen.getPrimerAdy(), unaEtiqueta));
-                nDestino.setPrimerAdy(new NodoAdyMod(nOrigen, nDestino.getPrimerAdy(), unaEtiqueta));
                 exito = true;
             }
         }
@@ -302,7 +281,7 @@ public class GrafoMod {
             NodoVertMod aux = this.inicio;
             while (aux != null && !exito) {
                 aux = aux.getSigVertice();
-                exito = aux.getElem().equals(unVertice);
+                exito = aux.getElem().getCodigoPostal().equals(unVertice);
             }
         }
         return exito;
@@ -311,17 +290,17 @@ public class GrafoMod {
     public boolean eliminarVertice(Object unVertice) {
         boolean exito = false;
         if (inicio != null) {
-            if (inicio.getElem().equals(unVertice)) {
+            if (inicio.getElem().getCodigoPostal().equals(unVertice)) {
                  //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
-                eliminarAdyacentesDe(this.inicio.getPrimerAdy(), unVertice);
+                eliminarAdyacentesDe(this.inicio, unVertice);
                 this.inicio = inicio.getSigVertice();
                 exito = true;
             } else {
                 NodoVertMod aux = this.inicio;
-                while (aux != null && !exito) {
-                    if (aux.getSigVertice().getElem().equals(unVertice)) {
+                while (aux.getSigVertice() != null && !exito) {
+                    if (aux.getSigVertice().getElem().getCodigoPostal().equals(unVertice)) {
                         //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
-                        eliminarAdyacentesDe(aux.getSigVertice().getPrimerAdy(), unVertice);
+                        eliminarAdyacentesDe(this.inicio, unVertice);
                         aux.setSigVertice(aux.getSigVertice().getSigVertice());
                         exito = true;
                     } else {
@@ -333,37 +312,39 @@ public class GrafoMod {
         return exito;
     }
 
-    private void eliminarAdyacentesDe (NodoAdyMod nAux, Object unVertice){
+    private void eliminarAdyacentesDe (NodoVertMod nAux, Object unVertice){
         //este modulo elimina los adyacentes que tengan como destino a unVertice
         while(nAux!=null){
-            NodoAdyMod aux = nAux.getVertice().getPrimerAdy();
-            if(aux.getVertice().getElem().equals(unVertice)){
-                nAux.getVertice().setPrimerAdy(aux.getSigAdyacente());
-            } else {
-                boolean salir = false;
-                while(aux!=null && !salir){
-                    if(aux.getSigAdyacente().getVertice().getElem().equals(unVertice)){
-                        aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
-                        salir = true;
-                    } else {
-                        aux = aux.getSigAdyacente();
+            NodoAdyMod ady = nAux.getPrimerAdy();
+            if(ady!=null){
+                if(ady.getVertice().getElem().getCodigoPostal().equals(unVertice)){
+                    nAux.setPrimerAdy(ady.getSigAdyacente());
+                } else {
+                    boolean salir = false;
+                    while(ady.getSigAdyacente()!=null && !salir){
+                        if(ady.getSigAdyacente().getVertice().getElem().getCodigoPostal().equals(unVertice)){
+                            ady.setSigAdyacente(ady.getSigAdyacente().getSigAdyacente());
+                            salir = true;
+                        } else {
+                            ady = ady.getSigAdyacente();
+                        }
                     }
                 }
             }
-            nAux = nAux.getSigAdyacente();
+            nAux = nAux.getSigVertice();
         }
     }        
 
     private NodoVertMod ubicarVertice(Object buscado) {
         // aux que se usa para ver si ya existe el nuevo vertice a ingresar
         NodoVertMod aux = this.inicio;
-        while (aux != null && !aux.getElem().equals(buscado)) {
+        while (aux != null && !aux.getElem().getCodigoPostal().equals(buscado)) {
             aux = aux.getSigVertice();
         }
         return aux;
     }
 
-    public boolean insertarVertice(Object nuevoVertice) {
+    public boolean insertarVertice(Ciudad nuevoVertice) {
         boolean exito = false;
         NodoVertMod aux = this.ubicarVertice(nuevoVertice);
         if (aux == null) {

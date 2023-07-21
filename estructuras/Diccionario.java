@@ -1,5 +1,7 @@
 package estructuras;
 
+import tpo.Ciudad;
+
 public class Diccionario {
         NodoAVLDicc raiz;
     
@@ -143,45 +145,58 @@ public class Diccionario {
                         nAux.setDato(reemplazo.getDato());
                         nAux.recalcularAltura();
                         padre.recalcularAltura();
-                        balancear(nAux, padre);
+                        balancear(balance(nAux),nAux, padre);
                     } else {
                         if (nAux.getIzquierdo() == null && nAux.getDerecho() == null) {
                             //caso en el que no tiene hijos, puede ser necesario balancear en caso de eliminacion
-                            if (padre.getDerecho() != null) {
-                                if (padre.getDerecho().getClave().equals(claveEliminar)) {
-                                    padre.setDerecho(null);
+                            if(padre!=null){
+
+                                if (padre.getDerecho() != null) {
+                                    if (padre.getDerecho().getClave().equals(claveEliminar)) {
+                                        padre.setDerecho(null);
+                                    } else {
+                                        padre.setIzquierdo(null);
+                                    }
                                 } else {
                                     padre.setIzquierdo(null);
                                 }
+                                padre.recalcularAltura();
+                                abuelo.recalcularAltura();
+                                balancear(balance(padre),padre, abuelo);
                             } else {
-                                padre.setIzquierdo(null);
+                                this.raiz = null;
                             }
-                            padre.recalcularAltura();
-                            abuelo.recalcularAltura();
-                            balancear(padre, abuelo);
                         } else {
                             //caso en el que solamente tiene uno de los dos hijos
                             if (nAux.getIzquierdo() != null) {
-                                if (padre.getClave().compareTo(nAux.getClave()) < 0) {
-                                    padre.setDerecho(nAux.getIzquierdo());
+                                if(padre!=null){
+                                    if (padre.getClave().compareTo(nAux.getClave()) < 0) {
+                                        padre.setDerecho(nAux.getIzquierdo());
+                                    } else {
+                                        padre.setIzquierdo(nAux.getIzquierdo());
+                                    }
                                 } else {
-                                    padre.setIzquierdo(nAux.getIzquierdo());
+                                    this.raiz = raiz.getIzquierdo();
                                 }
                             } else if (nAux.getDerecho() != null) {
-                                if (padre.getClave().compareTo(nAux.getClave()) < 0) {
-                                    padre.setDerecho(nAux.getDerecho());
+                                if(padre!=null){
+                                    if (padre.getClave().compareTo(nAux.getClave()) < 0) {
+                                        padre.setDerecho(nAux.getDerecho());
+                                    } else {
+                                        padre.setIzquierdo(nAux.getDerecho());
+                                    }
                                 } else {
-                                    padre.setIzquierdo(nAux.getDerecho());
+                                    this.raiz = raiz.getDerecho();
                                 }
+                                
                             }
                         }
                     }
-    
                 } else {
                     if (claveAux.compareTo(claveEliminar) > 0) {
-                        eliminarAux(padre, nAux, nAux.getIzquierdo(), claveEliminar);
+                        exito = eliminarAux(padre, nAux, nAux.getIzquierdo(), claveEliminar);
                     } else {
-                        eliminarAux(padre, nAux, nAux.getDerecho(), claveEliminar);
+                        exito = eliminarAux(padre, nAux, nAux.getDerecho(), claveEliminar);
                     }
                 }
             }
@@ -209,9 +224,11 @@ public class Diccionario {
         public boolean insertar(Comparable unaClave, Object unDato){
             boolean exito = false;
             if(this.raiz!=null){
+                this.raiz.recalcularAltura();
                 exito = insertarAux(null,this.raiz, unaClave, unDato);
             } else{
                 this.raiz = new NodoAVLDicc(unaClave, unDato, null, null);
+                exito = true;
             }
             return exito;
         }
@@ -239,81 +256,96 @@ public class Diccionario {
                 }
                 if (exito) {
                     nAux.recalcularAltura();
-                    balancear(nAux, padre);
+                    balancear(balance(nAux),nAux, padre);
                 }
             }
             return exito;
         }
-    
-        private void balancear(NodoAVLDicc nAux, NodoAVLDicc padre) {
-            int balanceNodo;
+
+        private void balancear(int balanceNodo, NodoAVLDicc nAux, NodoAVLDicc padre) {
             int balanceHijo;
-            balanceNodo = balance(nAux);
-            if (balanceNodo == 2) {
-                balanceHijo = balance(nAux.getIzquierdo());
-                if (balanceHijo == 1 || balanceHijo == 0) {
-                    if (padre == null) {
-                        this.raiz = rotacionDer(nAux);
-                    } else {
-                        padre.setIzquierdo(rotacionDer(nAux));
-                    }
-                } else if (balanceHijo == -1) {
-                    nAux.setIzquierdo(rotacionIzq(nAux.getIzquierdo()));
-                    if (padre != null) {
-                        if (padre.getIzquierdo().getClave().equals(nAux.getClave())) {
-                            padre.setIzquierdo(rotacionDer(nAux));
+            switch (balanceNodo) {
+                case 2:
+                    //inclinado a la izquierda
+                    balanceHijo = balance(nAux.getIzquierdo());
+                    if (balanceHijo == 0 || balanceHijo == 1) {
+                        if (padre == null) {
+                            this.raiz = rotacionDer(nAux);
                         } else {
-                            padre.setDerecho(rotacionDer(nAux));
+                            if (nAux.getClave().compareTo(padre.getClave()) < 0) {
+                                padre.setIzquierdo(rotacionDer(nAux));
+                            } else {
+                                padre.setDerecho(rotacionDer(nAux));
+                            }
+                        }
+                    } else if (padre == null) {
+                        this.raiz = rotacionIzqDer(nAux);
+                    } else {
+                        if (nAux.getClave().compareTo(padre.getClave()) < 0) {
+                            padre.setIzquierdo(rotacionIzqDer(nAux));
+                        } else {
+                            padre.setDerecho(rotacionIzqDer(nAux));
+                        }
+                    }
+                break;
+                case -2:
+                //inclinado a la derecha
+                    balanceHijo = balance(nAux.getDerecho());
+                    if (balanceHijo == 0 || balanceHijo == -1) {
+                        if (padre == null) {
+                            this.raiz = rotacionIzq(nAux);
+                        } else {
+                            if (padre.getClave().compareTo(nAux.getClave()) < 0) {
+                                padre.setDerecho(rotacionIzq(nAux));
+                            } else {
+                                padre.setIzquierdo(rotacionIzq(nAux));
+                            }
                         }
                     } else {
-                        this.rotacionDer(nAux);
-                    }
-    
-                }
-            } else if (balanceNodo == -2) {
-                balanceHijo = balance(nAux.getDerecho());
-                if (balanceHijo == -1 || balanceHijo == 0) {
-                    if (padre == null) {
-                        this.raiz = rotacionIzq(nAux);
-                    } else {
-                        padre.setDerecho(rotacionIzq(nAux));
-                    }
-                } else if (balanceHijo == 1) {
-                    nAux.setDerecho(rotacionDer(nAux.getDerecho()));
-                    if (padre != null) {
-                        if (padre.getIzquierdo().getClave().equals(nAux.getClave())) {
-                            padre.setIzquierdo(rotacionIzq(nAux));
+                        if (padre == null) {
+                            this.raiz = rotacionDerIzq(nAux);
                         } else {
-                            padre.setDerecho(rotacionIzq(nAux));
+                            if (padre.getClave().compareTo(nAux.getClave()) < 0) {
+                                padre.setDerecho(rotacionDerIzq(nAux));
+                            } else {
+                                padre.setIzquierdo(rotacionDerIzq(nAux));
+                            }
                         }
-                    } else {
-                        this.raiz = rotacionIzq(nAux);
                     }
-    
-                }
+                    break;
             }
-            nAux.recalcularAltura();
+        }
+
+        private NodoAVLDicc rotacionIzq(NodoAVLDicc nodo) {
+            NodoAVLDicc hijo = nodo.getDerecho();
+            NodoAVLDicc temp = hijo.getIzquierdo();
+            hijo.setIzquierdo(nodo);
+            nodo.setDerecho(temp);
+            nodo.recalcularAltura();
+            hijo.recalcularAltura();
+            return hijo;
         }
     
-        private NodoAVLDicc rotacionIzq(NodoAVLDicc r) {
-            NodoAVLDicc h = r.getDerecho();
-            NodoAVLDicc temp = h.getIzquierdo();
-            h.setIzquierdo(r);
-            r.setDerecho(temp);
-            h.recalcularAltura();
-            r.recalcularAltura();
-            return h;
+        private NodoAVLDicc rotacionDer(NodoAVLDicc nodo) {
+            NodoAVLDicc hijo = nodo.getIzquierdo();
+            NodoAVLDicc temp = hijo.getDerecho();
+            hijo.setDerecho(nodo);
+            nodo.setIzquierdo(temp);
+            nodo.recalcularAltura();
+            hijo.recalcularAltura();
+            return hijo;
         }
     
-        private NodoAVLDicc rotacionDer(NodoAVLDicc r) {
-            NodoAVLDicc h = r.getIzquierdo();
-            NodoAVLDicc temp = h.getDerecho();
-            h.setDerecho(r);
-            r.setIzquierdo(temp);
-            h.recalcularAltura();
-            r.recalcularAltura();
-            return h;
+        private NodoAVLDicc rotacionIzqDer(NodoAVLDicc r) {
+            r.setIzquierdo(rotacionIzq(r.getIzquierdo()));
+            return rotacionDer(r);
         }
+    
+        private NodoAVLDicc rotacionDerIzq(NodoAVLDicc r) {
+            r.setDerecho(rotacionDer(r.getDerecho()));
+            return rotacionIzq(r);
+        }
+    
     
         private int balance(NodoAVLDicc nAux) {
             int balanceNodo;
