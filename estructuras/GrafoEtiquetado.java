@@ -260,6 +260,7 @@ public class GrafoEtiquetado {
                 if(encontrado){
                     if (nDestino.getPrimerAdy().getVertice() == nOrigen) {
                         nDestino.setPrimerAdy(nDestino.getPrimerAdy().getSigAdyacente());
+                        exito = true;
                     } else {
                         while (aux2 != null && !salir2) {
                             if (aux2.getSigAdyacente().getVertice() == nOrigen) {
@@ -310,7 +311,7 @@ public class GrafoEtiquetado {
     public boolean eliminarVertice(Object unVertice) {
         boolean exito = false;
         if (inicio != null) {
-            if (inicio.getElem().equals(unVertice)) {
+            if (inicio.getElem().getCodigoPostal().equals(unVertice)) {
                  //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
                 eliminarAdyacentesDe(this.inicio.getPrimerAdy(), unVertice);
                 this.inicio = inicio.getSigVertice();
@@ -318,7 +319,7 @@ public class GrafoEtiquetado {
             } else {
                 NodoVert aux = this.inicio;
                 while (aux.getSigVertice() != null && !exito) {
-                    if (aux.getSigVertice().getElem().equals(unVertice)) {
+                    if (aux.getSigVertice().getElem().getCodigoPostal().equals(unVertice)) {
                         //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
                         eliminarAdyacentesDe(aux.getSigVertice().getPrimerAdy(), unVertice);
                         aux.setSigVertice(aux.getSigVertice().getSigVertice());
@@ -336,12 +337,12 @@ public class GrafoEtiquetado {
         //este modulo elimina los adyacentes que tengan como destino a unVertice
         while(nAux!=null){
             NodoAdy aux = nAux.getVertice().getPrimerAdy();
-            if(aux.getVertice().getElem().equals(unVertice)){
+            if(aux.getVertice().getElem().getCodigoPostal().equals(unVertice)){
                 nAux.getVertice().setPrimerAdy(aux.getSigAdyacente());
             } else {
                 boolean salir = false;
                 while(aux.getSigAdyacente()!=null && !salir){
-                    if(aux.getSigAdyacente().getVertice().getElem().equals(unVertice)){
+                    if(aux.getSigAdyacente().getVertice().getElem().getCodigoPostal().equals(unVertice)){
                         aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
                         salir = true;
                     } else {
