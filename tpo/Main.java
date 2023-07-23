@@ -113,12 +113,82 @@ public class Main {
                 case 1:
                     agregarCliente();
                 break;
+                case 2:
+                    eliminarCliente();
+                break;
+                case 3:
+                    editarCliente();
+                break;
+                case 4:
+                break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
                 break;
             }
         }while(respuesta!=4);
     }
+
+    public static void eliminarCliente(){
+        System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
+        System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a eliminar: "+ANSI_RESET);
+        String tipoDni = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a eliminar:"+ANSI_RESET);
+        String dni = sc.next();
+        if(clientes.containsKey(tipoDni+dni)){
+            clientes.remove(tipoDni+dni);
+            System.out.println(ANSI_GREEN+"EL CLIENTE FUE ELIMINADO CON EXITO"+ANSI_RESET);
+        } else {
+            System.out.println(ANSI_RED+"EL CLIENTE NO ESTA INGRESADO, POR ENDE NO FUE ELIMINADO"+ANSI_RED);
+        }
+    }
+
+    public static void editarCliente(){
+        System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
+        System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a editar: "+ANSI_RESET);
+        String tipoDni = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a editar:"+ANSI_RESET);
+        String dni = sc.next();
+        if(clientes.containsKey(tipoDni+dni)){
+            System.out.println(ANSI_YELLOW+"<> 1. Editar nombre. \n<> 2. Editar apellido. \n<> 3. Editar numero de telefono.\n<> 4. Editar e-mail.\n<> 5. Volver al ABMClientes"+ANSI_RESET);
+            int respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    System.out.println(ANSI_WHITE+"Ingrese el nuevo nombre del cliente (en un solo mensaje): "+ANSI_RESET);
+                    String nombre = sc.nextLine();
+                    nombre = sc.nextLine();
+                    clientes.get(tipoDni+dni).setNombre(nombre);
+                    System.out.println(ANSI_GREEN+"EL NOMBRE FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                break;
+                case 2:
+                    System.out.println(ANSI_WHITE+"Ingrese el nuevo apellido del cliente (en un solo mensaje): "+ANSI_RESET);
+                    String apellido = sc.nextLine();
+                    apellido = sc.nextLine();
+                    clientes.get(tipoDni+dni).setApellido(apellido);
+                    System.out.println(ANSI_GREEN+"EL APELLIDO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                break;
+                case 3:
+                    System.out.println(ANSI_WHITE+"Ingrese el nuevo numero de telefono del cliente: "+ANSI_RESET);
+                    String numero = sc.nextLine();
+                    numero = sc.nextLine();
+                    clientes.get(tipoDni+dni).setTelefono(numero);
+                    System.out.println(ANSI_GREEN+"EL NUMERO DE TELEFONO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                break;
+                case 4:
+                    System.out.println(ANSI_WHITE+"Ingrese el nuevo e-mail del cliente: "+ANSI_RESET);
+                    String email = sc.nextLine();
+                    email = sc.nextLine();
+                    clientes.get(tipoDni+dni).setEmail(email);
+                    System.out.println(ANSI_GREEN+"EL EMAIL FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                break;
+                case 5:
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                break;
+            }
+        }
+    }
+
 
     public static void agregarCliente(){
         //P;DNI;35678965;FERNANDEZ;JUAN CARLOS;299-4495117;juan.carlos@gmail.com
