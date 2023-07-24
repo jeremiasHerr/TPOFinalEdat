@@ -17,6 +17,11 @@ public class Cliente {
         this.telefono = telefono;
     }
 
+    public String toString(){
+        return "Tipo DNI: "+tipoDni+"\nDNI: "+numeroDocumento+"\nNombre/s: "+nombre+"\nApellido/s: "+apellido+
+        "\nE-mail: "+email+"\nNumero de telefono: "+telefono;
+    }
+
     public String getTipoDni() {
         return tipoDni;
     }

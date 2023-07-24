@@ -29,7 +29,7 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(clientes.toString());
+        System.out.println(pedidos.toString());
     }
 
     public static void menu() throws FileNotFoundException, IOException {
@@ -38,7 +38,7 @@ public class Main {
         do {
             System.out.println(ANSI_BLUE+"---------------------------------------MENU---------------------------------------"+ANSI_RESET);
             System.out.println(ANSI_YELLOW+"<> 1. Carga inicial del sistema.\n<> 2. ABM de ciudades.\n" + //
-                    "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 0. Cerrar el programa."+ANSI_RESET);
+                    "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente.\n<> 0. Cerrar el programa."+ANSI_RESET);
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 0:
@@ -60,9 +60,17 @@ public class Main {
                     clearLog();
                     ABMClientes();
                 break;
+                case 5:
+                    clearLog();
+                    ABMPedidos();
+                break;
+                case 6:
+                    consultarCliente();
+                    clearLog();
+                break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_RESET);
-                    break;
+                break;
             }
         } while (respuesta!=0);
         sc.close();
@@ -104,6 +112,86 @@ public class Main {
         }
     }
 
+    public static void consultarCliente(){
+        int respuesta;
+        do{
+            System.out.println(ANSI_BLUE+"----------------------------------CONSULTAR CLIENTE---------------------------------"+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a consultar"+ANSI_RESET);
+            String tipoDni = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a consultar"+ANSI_RESET);
+            String dni = sc.next();
+            System.out.println();
+            if(clientes.containsKey(tipoDni+dni)){
+                System.out.println(ANSI_GREEN+"INFORMACION DE "+ANSI_RESET+ANSI_WHITE+clientes.get(tipoDni+dni).getNombre()+ANSI_RESET+ANSI_GREEN+": "+ANSI_RESET);
+                System.out.println(clientes.get(tipoDni+dni).toString());
+            } else {
+                System.out.println(ANSI_RED+"EL CLIENTE AUN NO ESTA INGRESADO"+ANSI_RESET);
+            }
+            System.out.println(ANSI_YELLOW+"<> 1. Consultar la informacion de otro cliente.\n<> 2. Volver al menu."+ANSI_RESET);
+            respuesta = sc.nextInt();
+        }while(respuesta!=2);
+    }
+
+    public static void ABMPedidos(){
+        int respuesta;
+        do{
+            menuABMPedidos();
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    agregarPedido();
+                break;
+                case 2:
+
+                break;
+                case 3:
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                break;
+            }
+        }while(respuesta!=3);
+    }
+
+    public static void agregarPedido(){
+        //S;5000;8000;15/09/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
+        System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo pedido a continuacion: "+ANSI_RESET);
+        System.out.println(ANSI_WHITE+"Ingrese la ciudad origen del pedido (codigo postal): "+ANSI_RESET);
+        String ciudadOrigen = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese la ciudad destino del pedido (codigo postal): "+ANSI_RESET);
+        String ciudadDestino = sc.next();
+        if(rutas.existeCamino(ciudadOrigen, ciudadDestino)){
+            System.out.println(ANSI_WHITE+"Ingrese la fecha del pedido: "+ANSI_RESET);
+            String fecha = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente: "+ANSI_RESET);
+            String tipoDni = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente"+ANSI_RESET);
+            int dni = sc.nextInt();
+            System.out.println(ANSI_WHITE+"Ingrese la cantidad de metros cubicos a ocupar en el camion: "+ANSI_RESET);
+            int metrosCubicos = sc.nextInt();
+            System.out.println(ANSI_WHITE+"Ingrese la cantidad de bultos del pedido: "+ANSI_RESET);
+            int cantBultos = sc.nextInt();
+            System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de retiro del pedido: "+ANSI_RESET);
+            String direccionRetiro = sc.nextLine();
+            direccionRetiro = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de entrega del pedido: "+ANSI_RESET);
+            String direccionEntrega = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Ingrese si el pedido esta pago o no (SI para true NO para false): "+ANSI_RESET);
+            String respuestaPago = sc.next();
+            boolean estaPago = "SI".equals(respuestaPago.toUpperCase());
+            pedidos.insertarArco(ciudadOrigen, ciudadDestino, new SolicitudViaje(fecha, tipoDni, dni,metrosCubicos,cantBultos,direccionRetiro,direccionEntrega,estaPago,ciudadDestino,ciudadOrigen));
+            System.out.println(ANSI_GREEN+"EL PEDIDO FUE AGREGADO CON EXITO"+ANSI_RESET);
+        } else {
+            System.out.println(ANSI_RED+"NO EXISTE UNA RUTA ENTRE LAS CIUDADES, NO SE PUEDE AGREGAR EL PEDIDO."+ANSI_RED);
+        }
+        
+    }
+
+    public static void menuABMPedidos(){
+        System.out.println(ANSI_BLUE+"------------------------------------ABMPedidos-----------------------------------"+ANSI_RESET);
+        System.out.println(ANSI_YELLOW+"<> 1. Agregar un pedido. \n<> 2. Eliminar los pedidos de un cliente. \n<> 3. Volver al menu."+ANSI_RESET);
+    }
+
     public static void ABMClientes(){
         int respuesta;
         do{
@@ -131,7 +219,7 @@ public class Main {
     public static void eliminarCliente(){
         System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
         System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a eliminar: "+ANSI_RESET);
-        String tipoDni = sc.next();
+        String tipoDni = sc.next().toUpperCase();
         System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a eliminar:"+ANSI_RESET);
         String dni = sc.next();
         if(clientes.containsKey(tipoDni+dni)){
@@ -191,10 +279,9 @@ public class Main {
 
 
     public static void agregarCliente(){
-        //P;DNI;35678965;FERNANDEZ;JUAN CARLOS;299-4495117;juan.carlos@gmail.com
         System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo cliente a continuacion: "+ANSI_RESET);
         System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del nuevo cliente: "+ANSI_RESET);
-        String tipoDni = sc.next();
+        String tipoDni = sc.next().toUpperCase();
         System.out.println(ANSI_WHITE+"Ingrese el DNI del nuevo cliente"+ANSI_RESET);
         String dni = sc.next();
         if(!clientes.containsKey(tipoDni+dni)){

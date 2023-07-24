@@ -8,6 +8,30 @@ public class Diccionario {
         public Diccionario() {
             this.raiz = null;
         }
+
+        public boolean pertenece(Comparable elem) {
+            boolean pertenece = false;
+            if (this.raiz != null) {
+                pertenece = perteneceAux(this.raiz, elem);
+            }
+            return pertenece;
+        }
+    
+        private boolean perteneceAux(NodoAVLDicc nAux, Comparable elem) {
+            boolean pertenece = false;
+            if (nAux != null) {
+                if (nAux.getClave().compareTo(elem) == 0) {
+                    pertenece = true;
+                } else {
+                    if (nAux.getClave().compareTo(elem) < 0) {
+                        pertenece = perteneceAux(nAux.getDerecho(), elem);
+                    } else {
+                        pertenece = perteneceAux(nAux.getIzquierdo(), elem);
+                    }
+                }
+            }
+            return pertenece;
+        }
     
         public Lista listarClaves() {
             Lista lista = new Lista();

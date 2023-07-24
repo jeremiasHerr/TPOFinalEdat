@@ -185,13 +185,13 @@ public class GrafoDirigidoMod {
     private boolean existeCaminoAux (NodoVertMod nAux, Object destino, Lista visitados) {
         boolean exito = false;
         if(nAux!=null){
-            if(nAux.getElem().equals(destino)){
+            if(nAux.getElem().getCodigoPostal().equals(destino)){
                 exito = true;
             } else {
-                visitados.insertar(nAux.getElem(), visitados.longitud()+1);
+                visitados.insertar(nAux.getElem().getCodigoPostal(), visitados.longitud()+1);
                 NodoAdyMod aux = nAux.getPrimerAdy();
                 while(!exito && aux!=null){
-                    if(visitados.localizar(aux.getVertice().getElem())<0){
+                    if(visitados.localizar(aux.getVertice().getElem().getCodigoPostal())<0){
                         exito = existeCaminoAux(aux.getVertice(), destino, visitados);
                     }
                     aux = aux.getSigAdyacente();
