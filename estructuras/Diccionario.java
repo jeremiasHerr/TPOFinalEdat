@@ -370,7 +370,6 @@ public class Diccionario {
             return rotacionIzq(r);
         }
     
-    
         private int balance(NodoAVLDicc nAux) {
             int balanceNodo;
             int alturaHijoIzquierdo = -1;
@@ -383,6 +382,28 @@ public class Diccionario {
             }
             balanceNodo = alturaHijoIzquierdo - alturaHijoDerecho;
             return balanceNodo;
+        }
+
+        public Lista listarRango(Comparable<Integer> minimo, Comparable<Integer> maximo) {
+            Lista resultado = new Lista();
+            if (this.raiz != null) {
+                listarRangoAux(this.raiz, minimo, maximo, resultado);
+            }
+            return resultado;
+        }
+    
+        private void listarRangoAux(NodoAVLDicc nAux, Comparable<Integer> minimo, Comparable<Integer> maximo, Lista resultado) {
+            if (nAux != null) {
+                if (nAux.getClave().compareTo(minimo) >= 0 && nAux.getClave().compareTo(maximo) <= 0) {
+                    resultado.insertar(nAux.getDato(), resultado.longitud() + 1);
+                }
+                if (nAux.getClave().compareTo(minimo) >= 0) {
+                    listarRangoAux(nAux.getIzquierdo(), minimo, maximo, resultado);
+                }
+                if (nAux.getClave().compareTo(maximo) <= 0) {
+                    listarRangoAux(nAux.getDerecho(), minimo, maximo, resultado);
+                }
+            }
         }
     
 }

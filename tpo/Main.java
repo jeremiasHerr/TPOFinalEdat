@@ -40,7 +40,8 @@ public class Main {
         do {
             System.out.println(ANSI_BLUE+"---------------------------------------MENU---------------------------------------"+ANSI_RESET);
             System.out.println(ANSI_YELLOW+"<> 1. Carga inicial del sistema.\n<> 2. ABM de ciudades.\n" + //
-                    "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente.\n<> 0. Cerrar el programa."+ANSI_RESET);
+                    "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente."+
+                    "\n<> 7. Consultar sobre ciudades.\n<> 0. Cerrar el programa."+ANSI_RESET);
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 0:
@@ -67,8 +68,12 @@ public class Main {
                     ABMPedidos();
                 break;
                 case 6:
-                    consultarCliente();
                     clearLog();
+                    consultarCliente();
+                break;
+                case 7:
+                    clearLog();
+                    consultaCiudades();
                 break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_RESET);
@@ -87,9 +92,9 @@ public class Main {
                 switch (tokens[0]) {
                     // significa que es una ciudad
                     case "C":
-                        Comparable codPostal = tokens[1];
+                        int codPostal = Integer.valueOf(tokens[1]);
                         Ciudad actual = new Ciudad(tokens[1], tokens[2], tokens[3]);
-                        ciudades.insertar(codPostal, actual); //se debe insertar la ciudad en el diccionario
+                        ciudades.insertar((Comparable)codPostal, actual); //se debe insertar la ciudad en el diccionario
                         rutas.insertarVertice(actual); //se debe insertar la ciudad en el grafo etiquetado "rutas" ya que cada vertice es una ciudad
                         pedidos.insertarVertice(actual);//se debe insertar la ciudad en el grafo de pedidos, ya que cada vertice es una ciudad
                     break;
@@ -113,6 +118,81 @@ public class Main {
             System.out.println(ANSI_GREEN+"CARGA INICIAL REALIZADA CON EXITO."+ANSI_RESET);
         }
     }
+
+    public static void consultaCiudades(){
+        int respuesta;
+        do{
+            System.out.println(ANSI_BLUE+"-------------------------CONSULTA DE CIUDADES--------------------------"+ANSI_RESET);
+            System.out.println(ANSI_YELLOW+"<> 1. Mostrar toda la informacion de una ciudad.\n<> 2. Mostrar ciudades con un prefijo particular.\n<> 3. Volver al menu."+ANSI_RESET);
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    informacionDeUnaCiudad();
+                break;
+                case 2:
+                    ciudadesConPrefijo();
+                break;
+                case 3:
+                    clearLog();
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                break;
+            }
+        }while(respuesta!=3);
+    }
+
+    public static void ciudadesConPrefijo(){
+        System.out.println(ANSI_WHITE+"Ingrese el prefijo: "+ANSI_RESET);
+        int prefijo = sc.nextInt();
+        String prefijoAux = String.valueOf(prefijo);
+        int cifras = (int)prefijoAux.length();
+        int base = prefijo;
+        int min=0,max=0;
+        switch(cifras){
+            case 1:
+                min = base*1000;
+                max = min+999;
+            break;
+            case 2:
+                min = base*100;
+                max = min+99;
+            break;
+            case 3:
+                min = base*10;
+                max = min+9;
+            break;
+            case 4:
+                min = base;
+                max = base;
+            break;
+            default:
+                System.out.println(ANSI_RED+"EL PREFIJO DEBE SER MENOR O IGUAL A 4 CIFRAS."+ANSI_RESET);
+            break;
+        }
+        Lista ciudadesResultado = ciudades.listarRango((Comparable)min, (Comparable)max);
+        if(ciudadesResultado!=null){
+            System.out.println(ANSI_BLUE+"CIUDADES CON PREFIJO "+ANSI_GREEN+prefijo+ANSI_RESET+ANSI_BLUE+":"+ANSI_RESET);
+            System.out.println(ciudadesResultado.toString());
+        } else {
+            System.out.println(ANSI_RED+"NO SE ENCONTRARON CIUDADES CON TAL PREFIJO"+ANSI_RESET);
+        }
+        
+    }
+
+    public static void informacionDeUnaCiudad(){
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad a consultar su informacion: "+ANSI_RESET);
+        String codPostal = sc.next();
+        Ciudad laCiudad = (Ciudad)ciudades.obtenerDato(codPostal);
+        if(laCiudad!=null){
+            System.out.println(ANSI_BLUE+"----------------------INFORMACION DE "+ANSI_GREEN+laCiudad.getNombre()+ANSI_BLUE+"----------------------"+ANSI_RESET);
+            System.out.println(ANSI_GREEN+laCiudad.toString()+ANSI_RESET);      
+        } else {
+            System.out.println(ANSI_RED+"LA CIUDAD NO FUE ENCONTRADA"+ANSI_RESET);
+        }
+
+    }
+
 
     public static void consultarCliente(){
         int respuesta;
@@ -550,7 +630,13 @@ public class Main {
     }
 
     public static void agregarCiudad(){
-        String codigoPostal, nombre, provincia;
+        /*
+        este metodo agrega una ciudad en cada estructura que almacena ciudades del programa,
+        para que asi se mantenga una coherencia en el sistema
+        */
+        String nombre, provincia;
+        //tiene que ser int para poder usarlo al comparar en diccionario
+        int codigoPostal;
         System.out.println(ANSI_WHITE+"Ingrese los datos de la nueva ciudad a continuacion:"+ANSI_RESET);
         System.out.println(ANSI_WHITE+"Nombre de la ciudad:"+ANSI_RESET);
         nombre = sc.nextLine();
@@ -558,8 +644,8 @@ public class Main {
         System.out.println(ANSI_WHITE+"Provincia de la ciudad:"+ANSI_RESET);
         provincia = sc.nextLine();
         System.out.println(ANSI_WHITE+"Codigo postal de la ciudad:"+ANSI_RESET);
-        codigoPostal = sc.nextLine();
-        Ciudad unaCiudad = new Ciudad(codigoPostal, nombre, provincia);
+        codigoPostal = sc.nextInt();
+        Ciudad unaCiudad = new Ciudad(String.valueOf(codigoPostal), nombre, provincia);
         boolean exito = ciudades.insertar(codigoPostal, unaCiudad) && pedidos.insertarVertice(unaCiudad) && rutas.insertarVertice(unaCiudad);
         if(exito){
             System.out.println(ANSI_GREEN+"LA CIUDAD FUE AGREGADA CON EXITO."+ANSI_RESET);
