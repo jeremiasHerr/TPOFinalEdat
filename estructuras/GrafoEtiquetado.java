@@ -44,6 +44,44 @@ public class GrafoEtiquetado {
         return resultado;
     }
 
+    public Lista caminoMasCortoKm(Object origen, Object destino){
+        Lista resultado = new Lista();
+        NodoVert nOrigen = ubicarVertice(origen);
+        NodoVert nDestino = ubicarVertice(destino);
+        double[] kmResultado = new double[1]; 
+        if(nOrigen!=null && nDestino!=null){
+            Lista visitados = new Lista(), listaAux = new Lista();
+            resultado = caminoMasCortoKmAux(nOrigen, destino,0,kmResultado, resultado, listaAux, visitados);
+        }
+        return resultado;
+    }
+
+    private Lista caminoMasCortoKmAux(NodoVert nAux, Object destino, double kmActual, double[]kmResultado ,Lista resultado, Lista listaAux, Lista visitados){
+        if (nAux != null){
+            Ciudad elem = nAux.getElem();
+            visitados.insertar(elem.getCodigoPostal(), visitados.longitud()+1);
+            listaAux.insertar(elem.getCodigoPostal(), listaAux.longitud()+1);
+            //si llego al destino significa que hay un nuevo camino encontrado y hay que fijarse si es mas corto
+            if (elem.getCodigoPostal().equals((String)destino)){
+                if (kmResultado[0]==0 || kmResultado[0]>kmActual){
+                    resultado = listaAux.clone();
+                    kmResultado[0] = kmActual;
+                }
+            } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
+                NodoAdy ady = nAux.getPrimerAdy();
+                while (ady != null){
+                    if (visitados.localizar(ady.getVertice().getElem().getCodigoPostal()) < 0){
+                        resultado = caminoMasCortoKmAux(ady.getVertice(), destino,kmActual+ady.getEtiqueta(),kmResultado, resultado, listaAux, visitados); 
+                    }
+                    ady = ady.getSigAdyacente();
+                }
+            }
+            listaAux.eliminar(listaAux.longitud());
+            visitados.eliminar(visitados.longitud());//es necesario sacarlo ya que para nuevos caminos puede necesitar pasa por el mismo nodo otra vez
+        }
+        return resultado;
+    }
+
 
     public Lista caminoMasCorto(Object origen, Object destino){
         Lista resultado = new Lista();
@@ -58,18 +96,18 @@ public class GrafoEtiquetado {
 
     private Lista caminoMasCortoAux(NodoVert nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
         if (nAux != null){
-            Object elem = nAux.getElem();
-            visitados.insertar(elem, visitados.longitud()+1);
-            listaAux.insertar(elem, listaAux.longitud()+1);
+            Ciudad elem = nAux.getElem();
+            visitados.insertar(elem.getCodigoPostal(), visitados.longitud()+1);
+            listaAux.insertar(elem.getCodigoPostal(), listaAux.longitud()+1);
             //si llego al destino significa que hay un nuevo camino encontrado y hay que fijarse si es mas corto
-            if (elem.equals(destino)){
+            if (elem.getCodigoPostal().equals((String)destino)){
                 if (resultado.esVacia() || (resultado.longitud() > listaAux.longitud())){
                     resultado = listaAux.clone();
                 }
             } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
                 NodoAdy ady = nAux.getPrimerAdy();
                 while (ady != null){
-                    if (visitados.localizar(ady.getVertice().getElem()) < 0){
+                    if (visitados.localizar(ady.getVertice().getElem().getCodigoPostal()) < 0){
                         resultado = caminoMasCortoAux(ady.getVertice(), destino, resultado, listaAux, visitados); 
                     }
                     ady = ady.getSigAdyacente();

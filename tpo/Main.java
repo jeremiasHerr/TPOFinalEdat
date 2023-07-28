@@ -41,7 +41,7 @@ public class Main {
             System.out.println(ANSI_BLUE+"---------------------------------------MENU---------------------------------------"+ANSI_RESET);
             System.out.println(ANSI_YELLOW+"<> 1. Carga inicial del sistema.\n<> 2. ABM de ciudades.\n" + //
                     "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente."+
-                    "\n<> 7. Consultar sobre ciudades.\n<> 0. Cerrar el programa."+ANSI_RESET);
+                    "\n<> 7. Consultar sobre ciudades.\n<> 8. Consultar sobre viajes.\n<> 0. Cerrar el programa."+ANSI_RESET);
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 0:
@@ -74,6 +74,10 @@ public class Main {
                 case 7:
                     clearLog();
                     consultaCiudades();
+                break;
+                case 8:
+                    clearLog();
+                    consultasViajes();
                 break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_RESET);
@@ -140,6 +144,56 @@ public class Main {
                 break;
             }
         }while(respuesta!=3);
+    }
+
+    public static void consultasViajes(){
+        int respuesta;
+        do{
+            System.out.println(ANSI_BLUE+"----------------------CONSULTAR VIAJES----------------------"+ANSI_WHITE);
+            System.out.println(ANSI_YELLOW+"<> 1. Obtener el camino que llegue de A a B que pase por menos ciudades."+
+            "\n<> 2. Obtener el camino que llegue de A a B de menor distancia en kilometros.\n<> 3. Volver al menu."+ANSI_RESET);
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    caminoMenosCiudades();
+                break;
+                case 2:
+                    caminoMenosKilometros();
+                break;
+                case 3:
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_WHITE);
+                break;
+            }
+        }while(respuesta!=3);
+        
+    }
+
+    public static void caminoMenosKilometros(){
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen"+ANSI_RESET);
+        String codOrigen = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino"+ANSI_RESET);
+        String codDestino = sc.next();
+        Lista camino = rutas.caminoMasCortoKm(codOrigen, codDestino);
+        if(camino!=null){
+            System.out.println(ANSI_GREEN+"EL CAMINO MAS CORTO ES: "+ANSI_RESET+"\n"+camino.toString());
+        } else {
+            System.out.println(ANSI_RED+"NO EXISTE UN CAMINO ENTRE AMBAS CIUDADES"+ANSI_WHITE);
+        }
+    }
+
+    public static void caminoMenosCiudades(){
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen"+ANSI_RESET);
+        String codOrigen = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino"+ANSI_RESET);
+        String codDestino = sc.next();
+        Lista camino = rutas.caminoMasCorto(codOrigen, codDestino);
+        if(camino!=null){
+            System.out.println(ANSI_GREEN+"EL CAMINO QUE PASA POR MENOS CIUDADES ES: "+ANSI_RESET+"\n"+camino.toString());
+        } else {
+            System.out.println(ANSI_RED+"NO EXISTE UN CAMINO ENTRE AMBAS CIUDADES"+ANSI_WHITE);
+        }
     }
 
     public static void ciudadesConPrefijo(){
@@ -211,6 +265,9 @@ public class Main {
             }
             System.out.println(ANSI_YELLOW+"<> 1. Consultar la informacion de otro cliente.\n<> 2. Volver al menu."+ANSI_RESET);
             respuesta = sc.nextInt();
+            if(respuesta!=1 && respuesta!=2){
+                System.out.println(ANSI_RED+"RESPUESTA INVALIDA, VOLVIENDO AL MENU"+ANSI_WHITE);
+            }
         }while(respuesta!=2);
     }
 
@@ -327,7 +384,6 @@ public class Main {
     }
 
     public static void agregarPedido(){
-        //S;5000;8000;15/09/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
         System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo pedido a continuacion: "+ANSI_RESET);
         System.out.println(ANSI_WHITE+"Ingrese la ciudad origen del pedido (codigo postal): "+ANSI_RESET);
         String ciudadOrigen = sc.next();

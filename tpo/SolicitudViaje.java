@@ -11,9 +11,6 @@ public class SolicitudViaje {
     private String domicilioEntrega;
     private boolean estaPago;
 
-    public SolicitudViaje() {
-    }
-
     public SolicitudViaje(String fechaSolicitud, String tipoDocumento, int numeroDocumento, int cantMetrosCubicos, 
                         int cantBultos, String direccionRetiro, String domicilioEntrega, boolean estaPago, String destino,String origen) {
         this.fechaSolicitud = fechaSolicitud;
