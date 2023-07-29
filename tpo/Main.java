@@ -41,7 +41,7 @@ public class Main {
             System.out.println(ANSI_BLUE+"---------------------------------------MENU---------------------------------------"+ANSI_RESET);
             System.out.println(ANSI_YELLOW+"<> 1. Carga inicial del sistema.\n<> 2. ABM de ciudades.\n" + //
                     "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente."+
-                    "\n<> 7. Consultar sobre ciudades.\n<> 8. Consultar sobre viajes.\n<> 0. Cerrar el programa."+ANSI_RESET);
+                    "\n<> 7. Consultar sobre ciudades.\n<> 8. Consultar sobre viajes.\n<> 9. Verificar viajes.\n<> 0. Cerrar el programa."+ANSI_RESET);
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 0:
@@ -78,6 +78,10 @@ public class Main {
                 case 8:
                     clearLog();
                     consultasViajes();
+                break;
+                case 9:
+                    clearLog();
+                    verificarViaje();
                 break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_RESET);
@@ -120,6 +124,82 @@ public class Main {
                 }
             }
             System.out.println(ANSI_GREEN+"CARGA INICIAL REALIZADA CON EXITO."+ANSI_RESET);
+        }
+    }
+
+    public static void verificarViaje(){
+        int respuesta;
+        do{
+            System.out.println(ANSI_BLUE+"-------------------VERIFICAR VIAJES-------------------"+ANSI_RESET);
+            System.out.println(ANSI_YELLOW+"<> 1. Dada una ciudad A y una ciudad B mostrar todos los pedidos y calcular cuanto espacio total hace falta en el camion"+
+            "\n<> 2. Verificar un camino perfecto usando una lista.\n<> 3. Volver al menu."+ANSI_RESET);
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1: 
+                    pedidosYCalcularEspacio();
+                break;
+                case 2:
+                    verificarCaminoPerfecto();
+                break;
+                case 3:
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                break;
+            }
+        } while(respuesta!=3);
+    }
+
+    public static void verificarCaminoPerfecto(){
+        Lista camino = new Lista();
+        System.out.println(ANSI_WHITE+"Ingrese la capacidad del camion"+ANSI_RESET);
+        int capacidad = sc.nextInt();
+        for (int i = 0; i < 4; i++) {
+            System.out.println("Ingrese una ciudad ("+(i+1)+")");
+            int codPostal = sc.nextInt();
+            camino.insertar(codPostal, camino.longitud()+1);
+        }
+        int i = 1,espacioNecesario = 0;
+        boolean seguir = true, aux=false;
+        while(i<4 && seguir && espacioNecesario<=capacidad){
+            Comparable codOrigen = (Comparable)camino.recuperar(i);
+            int k = i+1;
+            aux=false;
+            while(k<=4 && !aux){
+                Comparable codDestino = (Comparable)camino.recuperar(k);
+                if(rutas.existeCamino(codOrigen, codDestino) && pedidos.existeArco(codOrigen, codDestino) && !aux){
+                    espacioNecesario += pedidos.obtenerEtiqueta(codOrigen, codDestino).getCantMetrosCubicos();
+                    aux = true;
+                }
+                k++;
+            }
+            seguir = aux;
+            i++;
+        }
+        if(seguir){
+            System.out.println(ANSI_GREEN+"EXISTE UN CAMINO PERFECTO."+ANSI_RESET);
+        } else {
+            System.out.println(ANSI_RED+"NO EXISTE CAMINO PERFECTO"+ANSI_RESET);
+        }
+    }
+
+    public static void pedidosYCalcularEspacio(){
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la primera ciudad"+ANSI_RESET);
+        String primeraCiudad = sc.next();
+        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la segunda ciudad"+ANSI_RESET);
+        String segundaCiudad = sc.next();
+        if(pedidos.existeCamino(primeraCiudad, segundaCiudad)){
+            int espacioNecesario = 0;
+            Lista solicitudes = pedidos.listarElementos(primeraCiudad, segundaCiudad);
+            //se calcula el espacio necesario entre todas las solicitudes
+            for (int i = 1; i <= solicitudes.longitud(); i++) {
+                SolicitudViaje aux = (SolicitudViaje)solicitudes.recuperar(i);
+                espacioNecesario = aux.getCantMetrosCubicos() + espacioNecesario;
+            }
+            System.out.println(ANSI_GREEN+"LAS SOLICITUDES ENTRE AMBAS CIUDADES SON: "+ANSI_RESET+"\n"+solicitudes.toString());
+            System.out.println(ANSI_GREEN+"EL ESPACIO NECESARIO TOTAL EN METROS CUBICOS SERIA: "+ANSI_WHITE+espacioNecesario+ANSI_RESET);
+        } else {
+            System.out.println(ANSI_RED+"NO EXISTEN PEDIDOS ENTRE AMBAS CIUDADES"+ANSI_RESET);
         }
     }
 
@@ -231,7 +311,6 @@ public class Main {
         } else {
             System.out.println(ANSI_RED+"NO SE ENCONTRARON CIUDADES CON TAL PREFIJO"+ANSI_RESET);
         }
-        
     }
 
     public static void informacionDeUnaCiudad(){
@@ -303,57 +382,57 @@ public class Main {
         String ciudadOrigen = sc.next();        
         System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
         String ciudadDestino = sc.next();
-        SolicitudViaje laSolicitud = pedidos.obtenerEtiqueta(ciudadOrigen, ciudadDestino, tipoDni+dni);
+        SolicitudViaje laSolicitud = pedidos.obtenerEtiquetaDe(ciudadOrigen, ciudadDestino, tipoDni+dni);
         boolean salir=false;
         if(laSolicitud!=null){
             do{
-            menuEditarPedido();
-            int respuesta = sc.nextInt();
-            switch(respuesta){
-                case 1:
-                    System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de metros cubicos: "+ANSI_RESET);
-                    int cantMetrosCubicos = sc.nextInt();
-                    laSolicitud.setCantMetrosCubicos(cantMetrosCubicos);
-                    System.out.println(ANSI_GREEN+"CANTIDAD DE METROS CUBICOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
-                    salir = true;
-                break;
-                case 2:
-                    System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de bultos: "+ANSI_RESET);
-                    int cantBultos = sc.nextInt();
-                    laSolicitud.setCantBultos(cantBultos);
-                    System.out.println(ANSI_GREEN+"CANTIDAD DE BULTOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
-                    salir = true;                
-                break;
-                case 3:
-                    System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de retiro: "+ANSI_RESET);
-                    String nuevoRetiro = sc.nextLine();
-                    nuevoRetiro = sc.nextLine();
-                    laSolicitud.setDireccionRetiro(nuevoRetiro);
-                    System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE RETIRO ACTUALIZADA CON EXITO."+ANSI_RESET);
-                    salir = true;
-                break;
-                case 4:
-                    System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de entrega: "+ANSI_RESET);
-                    String nuevaEntrega = sc.nextLine();
-                    nuevaEntrega = sc.nextLine();
-                    laSolicitud.setDomicilioEntrega(nuevaEntrega);
-                    System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE ENTREGA ACTUALIZADA CON EXITO."+ANSI_RESET);
-                    salir = true;
-                break;
-                case 5:
-                    if(laSolicitud.estaPago()){
-                        System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PAGADA, AHORA FIGURA COMO PENDIENTE POR PAGAR."+ANSI_RESET);
-                        laSolicitud.setEstaPago(false);
-                    } else {
-                        System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PENDIENTE POR PAGAR, AHORA FIGURA COMO PAGADA."+ANSI_RESET);
-                        laSolicitud.setEstaPago(true);
-                    }
-                    salir = true;
-                break;
-                default:
-                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
-                break;
-            }
+                menuEditarPedido();
+                int respuesta = sc.nextInt();
+                switch(respuesta){
+                    case 1:
+                        System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de metros cubicos: "+ANSI_RESET);
+                        int cantMetrosCubicos = sc.nextInt();
+                        laSolicitud.setCantMetrosCubicos(cantMetrosCubicos);
+                        System.out.println(ANSI_GREEN+"CANTIDAD DE METROS CUBICOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
+                        salir = true;
+                    break;
+                    case 2:
+                        System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de bultos: "+ANSI_RESET);
+                        int cantBultos = sc.nextInt();
+                        laSolicitud.setCantBultos(cantBultos);
+                        System.out.println(ANSI_GREEN+"CANTIDAD DE BULTOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
+                        salir = true;                
+                    break;
+                    case 3:
+                        System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de retiro: "+ANSI_RESET);
+                        String nuevoRetiro = sc.nextLine();
+                        nuevoRetiro = sc.nextLine();
+                        laSolicitud.setDireccionRetiro(nuevoRetiro);
+                        System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE RETIRO ACTUALIZADA CON EXITO."+ANSI_RESET);
+                        salir = true;
+                    break;
+                    case 4:
+                        System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de entrega: "+ANSI_RESET);
+                        String nuevaEntrega = sc.nextLine();
+                        nuevaEntrega = sc.nextLine();
+                        laSolicitud.setDomicilioEntrega(nuevaEntrega);
+                        System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE ENTREGA ACTUALIZADA CON EXITO."+ANSI_RESET);
+                        salir = true;
+                    break;
+                    case 5:
+                        if(laSolicitud.estaPago()){
+                            System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PAGADA, AHORA FIGURA COMO PENDIENTE POR PAGAR."+ANSI_RESET);
+                            laSolicitud.setEstaPago(false);
+                        } else {
+                            System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PENDIENTE POR PAGAR, AHORA FIGURA COMO PAGADA."+ANSI_RESET);
+                            laSolicitud.setEstaPago(true);
+                        }
+                        salir = true;
+                    break;
+                    default:
+                        System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                    break;
+                }
         } while(!salir);
         } else {
             System.out.println(ANSI_RED+"NO SE PUDO ENCONTRAR LA SOLICITUD"+ANSI_RESET);

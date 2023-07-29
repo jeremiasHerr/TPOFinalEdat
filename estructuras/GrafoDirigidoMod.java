@@ -344,7 +344,39 @@ public class GrafoDirigidoMod {
         }
     }        
 
-    public SolicitudViaje obtenerEtiqueta(Object origen, Object destino, Object identificador){
+    public Lista listarElementos(Object origen, Object destino){
+        Lista resultado = new Lista();
+        if(this.inicio!=null){
+            boolean salir1 = false, salir2 = false;
+            NodoVertMod nAux = this.inicio;
+            while(!salir1 && !salir2 && nAux!=null){
+                if(nAux.getElem().getCodigoPostal().equals(origen)){
+                    NodoAdyMod nAdy = nAux.getPrimerAdy();
+                    while(nAdy!=null){
+                        if(nAdy.getVertice().getElem().getCodigoPostal().equals(destino)){
+                            resultado.insertar(nAdy.getSolicitud(), resultado.longitud()+1);
+                        }
+                        nAdy = nAdy.getSigAdyacente();
+                    }
+                    salir1 = true;
+                }
+                if(nAux.getElem().getCodigoPostal().equals(destino)){
+                    NodoAdyMod nAdy = nAux.getPrimerAdy();
+                    while(nAdy!=null){
+                        if(nAdy.getVertice().getElem().getCodigoPostal().equals(origen)){
+                            resultado.insertar(nAdy.getSolicitud(), resultado.longitud()+1);
+                        }
+                        nAdy = nAdy.getSigAdyacente();
+                    }
+                    salir2 = true;
+                }
+                nAux = nAux.getSigVertice();
+            }
+        }
+        return resultado;
+    }
+
+    public SolicitudViaje obtenerEtiqueta(Object origen, Object destino){
         SolicitudViaje resultado = null;
         if (this.inicio != null) {
             NodoVertMod nOrigen = ubicarVertice(origen);
@@ -353,6 +385,27 @@ public class GrafoDirigidoMod {
                 while (aux != null) {
                     if (aux.getVertice().getElem().getCodigoPostal().equals(destino)) {
                         resultado = (SolicitudViaje) aux.getSolicitud();
+                    } else {
+                        aux = aux.getSigAdyacente();
+                    }
+                }
+            }
+        }
+        return resultado;
+    }
+
+    public SolicitudViaje obtenerEtiquetaDe(Object origen, Object destino, Object identificador){
+        SolicitudViaje resultado = null;
+        if (this.inicio != null) {
+            NodoVertMod nOrigen = ubicarVertice(origen);
+            if (nOrigen != null) {
+                NodoAdyMod aux = nOrigen.getPrimerAdy();
+                while (aux != null) {
+                    if (aux.getVertice().getElem().getCodigoPostal().equals(destino)) {
+                        //verifico que sea del cliente que lo solicitó
+                        if(((SolicitudViaje)aux.getSolicitud()).getClave().equals(identificador)){
+                            resultado = (SolicitudViaje) aux.getSolicitud();
+                        }   
                     } else {
                         aux = aux.getSigAdyacente();
                     }

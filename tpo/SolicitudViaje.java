@@ -25,6 +25,12 @@ public class SolicitudViaje {
         this.ciudadOrigen = origen;
     }
 
+    public String toString(){
+        String res;
+        res = "Ciudad destino: "+ciudadDestino+" | Ciudad origen: "+ciudadDestino+" | Fecha: "+fechaSolicitud+" | Cantidad de bultos: "+cantBultos+" | Metros cubicos: "+cantMetrosCubicos;
+        return res;
+    }
+
     // Setters
     public void setFechaSolicitud(String fechaSolicitud) {
         this.fechaSolicitud = fechaSolicitud;
@@ -60,11 +66,15 @@ public class SolicitudViaje {
 
     // Getters
 
-    public String ciudadOrigen(){
+    public String getClave(){
+        return tipoDocumento+numeroDocumento;
+    }
+
+    public String getCiudadOrigen(){
         return ciudadOrigen;
     }
 
-    public String ciudadDestino(){
+    public String getCiudadDestino(){
         return ciudadDestino;
     }
 
