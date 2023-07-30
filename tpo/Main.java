@@ -9,6 +9,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Main {
     static final String ANSI_WHITE = "\u001B[97m";
@@ -28,10 +31,7 @@ public class Main {
             menu();
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        //S;9000;6000;23/06/2023;DNI;23659874;21;9;Av. de Mayo 1000;Av. San Martin 1400;T
-        System.out.println(pedidos.eliminarArco("9000", "6000", "DNI23659874"));
-        System.out.println(pedidos.toString());
+        }        
     }
 
     public static void menu() throws FileNotFoundException, IOException {
@@ -41,7 +41,7 @@ public class Main {
             System.out.println(ANSI_BLUE+"---------------------------------------MENU---------------------------------------"+ANSI_RESET);
             System.out.println(ANSI_YELLOW+"<> 1. Carga inicial del sistema.\n<> 2. ABM de ciudades.\n" + //
                     "<> 3. ABM de rutas.\n<> 4. ABM de clientes.\n<> 5. ABM de pedidos.\n<> 6. Consultar la informacion de un cliente."+
-                    "\n<> 7. Consultar sobre ciudades.\n<> 8. Consultar sobre viajes.\n<> 9. Verificar viajes.\n<> 0. Cerrar el programa."+ANSI_RESET);
+                    "\n<> 7. Consultar sobre ciudades.\n<> 8. Consultar sobre viajes.\n<> 9. Verificar viajes.\n<> 10. Mostrar sistema\n<> 0. Cerrar el programa."+ANSI_RESET);
             respuesta = sc.nextInt();
             switch (respuesta) {
                 case 0:
@@ -83,50 +83,98 @@ public class Main {
                     clearLog();
                     verificarViaje();
                 break;
+                case 10:
+                    clearLog();
+                    mostrarSistema();
+                break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA"+ANSI_RESET);
                 break;
             }
         } while (respuesta!=0);
         sc.close();
+        
     }
 
     public static void cargaInicial() throws FileNotFoundException, IOException {
         try (Reader r = new FileReader("tpo\\cargaInicial.txt")) {
-            BufferedReader br = new BufferedReader(r);
-            String linea;
-            while ((linea = br.readLine()) != null) {
-                String[] tokens = linea.split(";");
-                switch (tokens[0]) {
-                    // significa que es una ciudad
-                    case "C":
-                        int codPostal = Integer.valueOf(tokens[1]);
-                        Ciudad actual = new Ciudad(tokens[1], tokens[2], tokens[3]);
-                        ciudades.insertar((Comparable)codPostal, actual); //se debe insertar la ciudad en el diccionario
-                        rutas.insertarVertice(actual); //se debe insertar la ciudad en el grafo etiquetado "rutas" ya que cada vertice es una ciudad
-                        pedidos.insertarVertice(actual);//se debe insertar la ciudad en el grafo de pedidos, ya que cada vertice es una ciudad
-                    break;
-                    //es una solicitud
-                    case "S":
-                        boolean estaPago = tokens[10] == "T";
-                        pedidos.insertarArco(tokens[1], tokens[2], new SolicitudViaje(tokens[3],tokens[4],Integer.parseInt(tokens[5]),
-                        Integer.parseInt(tokens[6]),Integer.parseInt(tokens[7]),tokens[8],tokens[9],estaPago,tokens[1],tokens[2]));
-                    break;
-                    //es una ruta
-                    case "R":
-                        rutas.insertarArco(tokens[1], tokens[2], Double.valueOf(tokens[3]));
-                    break;
-                    case "P":
-                        //clientes.put(new Cliente(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]), tokens[1]+tokens[2]);
-                        clientes.put(tokens[1]+tokens[2], new Cliente(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]));
-                    break;
-                    default: break;
+            FileWriter fileWriter = new FileWriter("tpo\\estadoCargaInicial.txt");
+            try (BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);) {
+                BufferedReader br = new BufferedReader(r);
+                String linea;
+                while ((linea = br.readLine()) != null) {
+                    String[] tokens = linea.split(";");
+                    switch (tokens[0]) {
+                        // significa que es una ciudad
+                        case "C":
+                            int codPostal = Integer.valueOf(tokens[1]);
+                            Ciudad actual = new Ciudad(tokens[1], tokens[2], tokens[3]);
+                            ciudades.insertar((Comparable)codPostal, actual); //se debe insertar la ciudad en el diccionario
+                            rutas.insertarVertice(actual); //se debe insertar la ciudad en el grafo etiquetado "rutas" ya que cada vertice es una ciudad
+                            pedidos.insertarVertice(actual);//se debe insertar la ciudad en el grafo de pedidos, ya que cada vertice es una ciudad
+                            bufferedWriter.write("SE CREO LA CIUDAD "+actual.getNombre()+" Y SE INSERTO EN LAS ESTRUCTURAS NECESARIAS.\n");
+                        break;
+                        //es una solicitud
+                        case "S":
+                            boolean estaPago = tokens[10] == "T";
+                            SolicitudViaje aux = new SolicitudViaje(tokens[3],tokens[4],Integer.parseInt(tokens[5]),
+                            Integer.parseInt(tokens[6]),Integer.parseInt(tokens[7]),tokens[8],tokens[9],estaPago,tokens[1],tokens[2]);
+                            pedidos.insertarArco(tokens[1], tokens[2], aux);
+                            bufferedWriter.write("SE CREO LA SOLICITUD DE "+aux.getTipoDocumento()+": "+aux.getNumeroDocumento()+".\n");
+                        break;
+                        //es una ruta
+                        case "R":
+                            rutas.insertarArco(tokens[1], tokens[2], Double.valueOf(tokens[3]));
+                            bufferedWriter.write("SE CREO LA RUTA QUE VA DESDE "+tokens[1]+" A "+tokens[2]+".\n");
+                        break;
+                        case "P":
+                            clientes.put(tokens[1]+tokens[2], new Cliente(tokens[1], tokens[2], tokens[3], tokens[4], tokens[5], tokens[6]));
+                            bufferedWriter.write("SE CREO EL CLIENTE "+tokens[4]+" "+tokens[3]+".\n");
+                        break;
+                        default: break;
+                    }
                 }
+            } catch (NumberFormatException e) {
+                e.printStackTrace();
             }
             System.out.println(ANSI_GREEN+"CARGA INICIAL REALIZADA CON EXITO."+ANSI_RESET);
         }
     }
 
+    public static void mostrarSistema(){
+        int respuesta;
+        do{
+            System.out.println(ANSI_YELLOW+"<> 1. Mostrar las ciudades.\n<> 2. Mostrar las rutas.\n<> 3. Mostrar los pedidos"+
+            "\n<> 4. Mostrar los clientes.\n<> 5. Volver al menu."+ANSI_RESET);
+            respuesta = sc.nextInt();
+            switch(respuesta){
+                case 1:
+                    System.out.println(ANSI_GREEN+"------------SISTEMA DE CIUDADES------------"+ANSI_RESET);
+                    System.out.println(ciudades.toString());
+                break;
+                case 2:
+                    System.out.println(ANSI_GREEN+"------------SISTEMA DE RUTAS------------"+ANSI_RESET);
+                    System.out.println(rutas.toString());
+                break;
+                case 3:
+                    System.out.println(ANSI_GREEN+"------------SISTEMA DE PEDIDOS------------"+ANSI_RESET);
+                    System.out.println(pedidos.toString());
+                break;
+                case 4:
+                    System.out.println(ANSI_GREEN+"------------SISTEMA DE CLIENTES------------"+ANSI_RESET);
+                    System.out.println(clientes.toString());
+                break;
+                case 5:
+                break;
+                default:
+                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                break;
+            }
+        } while(respuesta!=5);
+            
+    }
+
+    
     public static void verificarViaje(){
         int respuesta;
         do{
@@ -162,11 +210,11 @@ public class Main {
         int i = 1,espacioNecesario = 0;
         boolean seguir = true, aux=false;
         while(i<4 && seguir && espacioNecesario<=capacidad){
-            Comparable codOrigen = (Comparable)camino.recuperar(i);
+            Comparable<Object> codOrigen = (Comparable<Object>)camino.recuperar(i);
             int k = i+1;
             aux=false;
             while(k<=4 && !aux){
-                Comparable codDestino = (Comparable)camino.recuperar(k);
+                Comparable<Object> codDestino = (Comparable<Object>)camino.recuperar(k);
                 if(rutas.existeCamino(codOrigen, codDestino) && pedidos.existeArco(codOrigen, codDestino) && !aux){
                     espacioNecesario += pedidos.obtenerEtiqueta(codOrigen, codDestino).getCantMetrosCubicos();
                     aux = true;
@@ -350,6 +398,7 @@ public class Main {
         }while(respuesta!=2);
     }
 
+   
     public static void ABMPedidos(){
         int respuesta;
         do{
@@ -373,74 +422,81 @@ public class Main {
     }
 
     public static void editarPedido(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos necesarios para identificar el pedido a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el tipo de documento del cliente: "+ANSI_RESET);
-        String tipoDni = sc.next().toUpperCase();
-        System.out.println(ANSI_WHITE+"Ingrese el numero de documento del ciente: "+ANSI_RESET);
-        String dni = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad de origen del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadOrigen = sc.next();        
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadDestino = sc.next();
-        SolicitudViaje laSolicitud = pedidos.obtenerEtiquetaDe(ciudadOrigen, ciudadDestino, tipoDni+dni);
-        boolean salir=false;
-        if(laSolicitud!=null){
-            do{
-                menuEditarPedido();
-                int respuesta = sc.nextInt();
-                switch(respuesta){
-                    case 1:
-                        System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de metros cubicos: "+ANSI_RESET);
-                        int cantMetrosCubicos = sc.nextInt();
-                        laSolicitud.setCantMetrosCubicos(cantMetrosCubicos);
-                        System.out.println(ANSI_GREEN+"CANTIDAD DE METROS CUBICOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
-                        salir = true;
-                    break;
-                    case 2:
-                        System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de bultos: "+ANSI_RESET);
-                        int cantBultos = sc.nextInt();
-                        laSolicitud.setCantBultos(cantBultos);
-                        System.out.println(ANSI_GREEN+"CANTIDAD DE BULTOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
-                        salir = true;                
-                    break;
-                    case 3:
-                        System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de retiro: "+ANSI_RESET);
-                        String nuevoRetiro = sc.nextLine();
-                        nuevoRetiro = sc.nextLine();
-                        laSolicitud.setDireccionRetiro(nuevoRetiro);
-                        System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE RETIRO ACTUALIZADA CON EXITO."+ANSI_RESET);
-                        salir = true;
-                    break;
-                    case 4:
-                        System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de entrega: "+ANSI_RESET);
-                        String nuevaEntrega = sc.nextLine();
-                        nuevaEntrega = sc.nextLine();
-                        laSolicitud.setDomicilioEntrega(nuevaEntrega);
-                        System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE ENTREGA ACTUALIZADA CON EXITO."+ANSI_RESET);
-                        salir = true;
-                    break;
-                    case 5:
-                        if(laSolicitud.estaPago()){
-                            System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PAGADA, AHORA FIGURA COMO PENDIENTE POR PAGAR."+ANSI_RESET);
-                            laSolicitud.setEstaPago(false);
-                        } else {
-                            System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PENDIENTE POR PAGAR, AHORA FIGURA COMO PAGADA."+ANSI_RESET);
-                            laSolicitud.setEstaPago(true);
-                        }
-                        salir = true;
-                    break;
-                    default:
-                        System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
-                    break;
-                }
-        } while(!salir);
-        } else {
-            System.out.println(ANSI_RED+"NO SE PUDO ENCONTRAR LA SOLICITUD"+ANSI_RESET);
+        try (FileWriter fileWriter = new FileWriter("tpo\\operacionesABM.txt")) {
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos necesarios para identificar el pedido a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo de documento del cliente: "+ANSI_RESET);
+            String tipoDni = sc.next().toUpperCase();
+            System.out.println(ANSI_WHITE+"Ingrese el numero de documento del ciente: "+ANSI_RESET);
+            String dni = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad de origen del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadOrigen = sc.next();        
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadDestino = sc.next();
+            SolicitudViaje laSolicitud = pedidos.obtenerEtiquetaDe(ciudadOrigen, ciudadDestino, tipoDni+dni);
+            boolean salir=false;
+            if(laSolicitud!=null){
+                do{
+                    menuEditarPedido();
+                    int respuesta = sc.nextInt();
+                    switch(respuesta){
+                        case 1:
+                            System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de metros cubicos: "+ANSI_RESET);
+                            int cantMetrosCubicos = sc.nextInt();
+                            laSolicitud.setCantMetrosCubicos(cantMetrosCubicos);
+                            System.out.println(ANSI_GREEN+"CANTIDAD DE METROS CUBICOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
+                            bufferedWriter.write("SE EDITO LA CANTIDAD DE METROS CUBOS EN LA SOLICITUD DE VIAJE DEL CLIENTE: "+laSolicitud.getClave());
+                            salir = true;
+                        break;
+                        case 2:
+                            System.out.println(ANSI_WHITE+"Ingrese la nueva cantidad de bultos: "+ANSI_RESET);
+                            int cantBultos = sc.nextInt();
+                            laSolicitud.setCantBultos(cantBultos);
+                            System.out.println(ANSI_GREEN+"CANTIDAD DE BULTOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
+                            salir = true;                
+                        break;
+                        case 3:
+                            System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de retiro: "+ANSI_RESET);
+                            String nuevoRetiro = sc.nextLine();
+                            nuevoRetiro = sc.nextLine();
+                            laSolicitud.setDireccionRetiro(nuevoRetiro);
+                            System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE RETIRO ACTUALIZADA CON EXITO."+ANSI_RESET);
+                            salir = true;
+                        break;
+                        case 4:
+                            System.out.println(ANSI_WHITE+"Ingrese la nueva direccion de entrega: "+ANSI_RESET);
+                            String nuevaEntrega = sc.nextLine();
+                            nuevaEntrega = sc.nextLine();
+                            laSolicitud.setDomicilioEntrega(nuevaEntrega);
+                            System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE ENTREGA ACTUALIZADA CON EXITO."+ANSI_RESET);
+                            salir = true;
+                        break;
+                        case 5:
+                            if(laSolicitud.estaPago()){
+                                System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PAGADA, AHORA FIGURA COMO PENDIENTE POR PAGAR."+ANSI_RESET);
+                                laSolicitud.setEstaPago(false);
+                            } else {
+                                System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PENDIENTE POR PAGAR, AHORA FIGURA COMO PAGADA."+ANSI_RESET);
+                                laSolicitud.setEstaPago(true);
+                            }
+                            salir = true;
+                        break;
+                        default:
+                            System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                        break;
+                    }
+            } while(!salir);
+            } else {
+                System.out.println(ANSI_RED+"NO SE PUDO ENCONTRAR LA SOLICITUD"+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void menuEditarPedido(){
-        System.out.println(ANSI_BLUE+"<> 1. Editar la cantidad de metros cubicos.\n<> 2. Editar la cantidad de bultos.\n<> 3. Editar la direccion de retiro"
+        System.out.println(ANSI_YELLOW+"<> 1. Editar la cantidad de metros cubicos.\n<> 2. Editar la cantidad de bultos.\n<> 3. Editar la direccion de retiro"
         +"\n<> 4. Editar la direccion de entrega.\n<> 5. Editar si esta pago."+ANSI_RESET);
     }
 

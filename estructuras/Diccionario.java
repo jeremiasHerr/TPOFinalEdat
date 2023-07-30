@@ -3,7 +3,9 @@ package estructuras;
 import tpo.Ciudad;
 
 public class Diccionario {
-        NodoAVLDicc raiz;
+        private static final String ANSI_RED = "\u001B[31m";
+        private static final String ANSI_RESET = "\u001B[0m";
+        private NodoAVLDicc raiz;
     
         public Diccionario() {
             this.raiz = null;
@@ -88,12 +90,12 @@ public class Diccionario {
                     toString = toString + ", H.I: " + hijoIzq.getDato().toString();
     
                 } else {
-                    toString = toString + ", H.I: -";
+                    toString = toString + ", H.I: "+ANSI_RED+"SIN HIJO IZQ"+ANSI_RESET;
                 }
                 if (hijoDer != null) {
                     toString = toString + ", H.D: " + hijoDer.getDato().toString() + "\n";
                 } else {
-                    toString = toString + ", H.D: -\n";
+                    toString = toString + ", H.D: "+ANSI_RED+"SIN HIJO DER\n"+ANSI_RESET;
                 }
     
                 if (hijoIzq != null) {

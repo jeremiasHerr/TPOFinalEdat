@@ -1,5 +1,8 @@
 package tpo;
-public class Ciudad {
+
+public class Ciudad {    
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_GREEN = "\u001B[32m";
     private String codigoPostal;
     private String nombre;
     private String provincia;
@@ -35,7 +38,7 @@ public class Ciudad {
     }
 
     public String toString(){
-        return "Cod. Postal: " + this.codigoPostal + " | Ciudad: " + this.nombre + " | Provincia: " + this.provincia+"\n";
+        return ANSI_GREEN+"Cod. Postal: " + this.codigoPostal + ANSI_RESET + " | Ciudad: " + this.nombre + " | Provincia: " + this.provincia;
     }
 
 }

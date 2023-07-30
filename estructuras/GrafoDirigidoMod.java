@@ -159,7 +159,7 @@ public class GrafoDirigidoMod {
             NodoAdyMod ady = vertice.getPrimerAdy();
             while(ady != null) {
                 if(ady.getSigAdyacente() != null) {
-                    cadena = cadena + ady.getVertice().getElem().toString() + ", ";
+                    cadena = cadena + ady.getVertice().getElem().toString() + " | ";
                 } else {
                     cadena = cadena + ady.getVertice().getElem().toString();
                 }
@@ -396,15 +396,17 @@ public class GrafoDirigidoMod {
 
     public SolicitudViaje obtenerEtiquetaDe(Object origen, Object destino, Object identificador){
         SolicitudViaje resultado = null;
+        boolean salir = false;
         if (this.inicio != null) {
             NodoVertMod nOrigen = ubicarVertice(origen);
             if (nOrigen != null) {
                 NodoAdyMod aux = nOrigen.getPrimerAdy();
-                while (aux != null) {
+                while (aux != null && !salir) {
                     if (aux.getVertice().getElem().getCodigoPostal().equals(destino)) {
                         //verifico que sea del cliente que lo solicitó
                         if(((SolicitudViaje)aux.getSolicitud()).getClave().equals(identificador)){
                             resultado = (SolicitudViaje) aux.getSolicitud();
+                            salir = true;
                         }   
                     } else {
                         aux = aux.getSigAdyacente();

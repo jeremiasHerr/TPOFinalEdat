@@ -157,10 +157,10 @@ public class MapeoMuchos {
         return exito;
     }
 
-    private boolean eliminarAux(NodoAVLMapeo abuelo, NodoAVLMapeo padre, NodoAVLMapeo nAux, Comparable claveEliminar) {
+    private boolean eliminarAux(NodoAVLMapeo abuelo, NodoAVLMapeo padre, NodoAVLMapeo nAux, Comparable<Object> claveEliminar) {
         boolean exito = false;
         if (nAux != null) {
-            Comparable claveAux = nAux.getDominio(); // clave del nodo actual
+            Comparable<Object> claveAux = nAux.getDominio(); // clave del nodo actual
             if (claveAux.compareTo(claveEliminar) == 0) {
                 // el nodo es encontrado
                 exito = true;

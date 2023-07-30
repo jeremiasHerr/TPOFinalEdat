@@ -192,13 +192,13 @@ public class GrafoEtiquetado {
             NodoAdy ady = vertice.getPrimerAdy();
             while(ady != null) {
                 if(ady.getSigAdyacente() != null) {
-                    cadena = cadena + ady.getVertice().getElem().toString() + ", ";
+                    cadena = cadena + ady.getVertice().getElem().toString() + " | ";
                 } else {
                     cadena = cadena + ady.getVertice().getElem().toString();
                 }
                 ady = ady.getSigAdyacente();
             }
-            cadena = cadena + "\n" + toStringAux(vertice.getSigVertice());
+            cadena = cadena + "\n-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------\n" + toStringAux(vertice.getSigVertice());
         }
         return cadena;
     }
