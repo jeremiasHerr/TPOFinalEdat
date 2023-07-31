@@ -7,10 +7,6 @@ public class Ciudad {
     private String nombre;
     private String provincia;
 
-    public Ciudad() {
-
-    }
-
     public Ciudad(String codigoPostal, String nombre, String provincia) {
         this.codigoPostal = codigoPostal;
         this.nombre = nombre;

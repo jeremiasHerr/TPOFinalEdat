@@ -1,5 +1,9 @@
 package estructuras;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import tpo.Ciudad;
 import tpo.SolicitudViaje;
 
@@ -228,31 +232,33 @@ public class GrafoDirigidoMod {
         return resultado;
     }
 
+            
+
+
+
     public boolean eliminarArco(Object origen, Object destino, Object identificador) {
         boolean exito = false;
         if (!origen.equals(destino) && this.inicio != null) {
             NodoVertMod nOrigen = ubicarVertice(origen);
             NodoVertMod nDestino = ubicarVertice(destino);
-            System.out.println("og"+nOrigen);
-            System.out.println(nDestino);
             if (nOrigen != null && nDestino != null) {
                 // Si es el primer adyacente lo borro, sino busco en todos los adyacentes si
                 // existe el arco
-                System.out.println("a");
                 if (nOrigen.getPrimerAdy().getVertice().getElem().getCodigoPostal() == nDestino.getElem().getCodigoPostal()) {
                     SolicitudViaje unaSolicitud = ((SolicitudViaje)nOrigen.getPrimerAdy().getSolicitud());
                     if((unaSolicitud.getTipoDocumento()+unaSolicitud.getNumeroDocumento()).equals(identificador)){
-                         nOrigen.setPrimerAdy(nOrigen.getPrimerAdy().getSigAdyacente());
+                        nOrigen.setPrimerAdy(nOrigen.getPrimerAdy().getSigAdyacente());
                         exito = true;
                     }
                 } else {
                     NodoAdyMod aux = nOrigen.getPrimerAdy();
                     boolean salir = false;
+                    System.out.println("asd");
                     while (aux != null && !salir) {
-                        if (aux.getSigAdyacente().getVertice().getElem().getCodigoPostal() == nDestino.getElem().getCodigoPostal()) {
-                            System.out.println("asdasdasd");
+                        if (aux.getSigAdyacente().getVertice().getElem().getCodigoPostal().equals(nDestino.getElem().getCodigoPostal())) {
                             SolicitudViaje unaSolicitud = ((SolicitudViaje)aux.getSigAdyacente().getSolicitud());
                             if((unaSolicitud.getTipoDocumento()+unaSolicitud.getNumeroDocumento()).equals(identificador)){
+                                System.out.println("AAAAAAAA");
                                 salir = true;
                             }
                         } else {
@@ -260,7 +266,7 @@ public class GrafoDirigidoMod {
                         }
                     }
                     // Si aux es distinto de null significa que lo encontró al adyacente
-                    if (aux != null) {
+                    if (aux != null || salir) {
                         aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
                         exito = true;
                     }

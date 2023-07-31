@@ -414,11 +414,13 @@ public class Main {
                 case 3:
                     editarPedido();
                 break;
+                case 4:
+                break;
                 default:
                     System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
                 break;
             }
-        } while(respuesta!=3);
+        } while(respuesta!=4);
     }
 
     public static void editarPedido(){
@@ -445,7 +447,7 @@ public class Main {
                             int cantMetrosCubicos = sc.nextInt();
                             laSolicitud.setCantMetrosCubicos(cantMetrosCubicos);
                             System.out.println(ANSI_GREEN+"CANTIDAD DE METROS CUBICOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
-                            bufferedWriter.write("SE EDITO LA CANTIDAD DE METROS CUBOS EN LA SOLICITUD DE VIAJE DEL CLIENTE: "+laSolicitud.getClave());
+                            bufferedWriter.write("SE EDITO LA CANTIDAD DE METROS CUBOS EN LA SOLICITUD DE VIAJE DEL CLIENTE: "+laSolicitud.getClave()+"\n");
                             salir = true;
                         break;
                         case 2:
@@ -453,6 +455,7 @@ public class Main {
                             int cantBultos = sc.nextInt();
                             laSolicitud.setCantBultos(cantBultos);
                             System.out.println(ANSI_GREEN+"CANTIDAD DE BULTOS ACTUALIZADOS CON EXITO."+ANSI_RESET);
+                            bufferedWriter.write("SE EDITO LA CANTIDAD DE BULTOS EN LA SOLICITUD DE VIAJE DEL CLIENTE: "+laSolicitud.getClave()+"\n");
                             salir = true;                
                         break;
                         case 3:
@@ -461,6 +464,7 @@ public class Main {
                             nuevoRetiro = sc.nextLine();
                             laSolicitud.setDireccionRetiro(nuevoRetiro);
                             System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE RETIRO ACTUALIZADA CON EXITO."+ANSI_RESET);
+                            bufferedWriter.write("SE ACTUALIZO LA DIRECCION DE RETIRO EN LA SOLICITUD DEL CLIENTE: "+laSolicitud.getClave()+"\n");
                             salir = true;
                         break;
                         case 4:
@@ -469,14 +473,17 @@ public class Main {
                             nuevaEntrega = sc.nextLine();
                             laSolicitud.setDomicilioEntrega(nuevaEntrega);
                             System.out.println(ANSI_GREEN+"NUEVA DIRECCION DE ENTREGA ACTUALIZADA CON EXITO."+ANSI_RESET);
+                            bufferedWriter.write("SE ACTUALIZO LA DIRECCION DE ENTREGA EN LA SOLICITUD DEL CLIENTE: "+laSolicitud.getClave()+"\n");
                             salir = true;
                         break;
                         case 5:
                             if(laSolicitud.estaPago()){
                                 System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PAGADA, AHORA FIGURA COMO PENDIENTE POR PAGAR."+ANSI_RESET);
+                                bufferedWriter.write("AHORA LA SOLICITUD DE: "+laSolicitud.getClave()+" FIGURA COMO PENDIENTE POR PAGAR."+"\n");
                                 laSolicitud.setEstaPago(false);
                             } else {
                                 System.out.println(ANSI_GREEN+"LA SOLICITUD FIGURABA COMO PENDIENTE POR PAGAR, AHORA FIGURA COMO PAGADA."+ANSI_RESET);
+                                bufferedWriter.write("AHORA LA SOLICITUD DE: "+laSolicitud.getClave()+" FIGURA COMO PAGADA."+"\n");
                                 laSolicitud.setEstaPago(true);
                             }
                             salir = true;
@@ -485,7 +492,7 @@ public class Main {
                             System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
                         break;
                     }
-            } while(!salir);
+                } while(!salir);
             } else {
                 System.out.println(ANSI_RED+"NO SE PUDO ENCONTRAR LA SOLICITUD"+ANSI_RESET);
             }
@@ -500,54 +507,76 @@ public class Main {
         +"\n<> 4. Editar la direccion de entrega.\n<> 5. Editar si esta pago."+ANSI_RESET);
     }
 
+    
+
     public static void eliminarPedido(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos necesarios a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el tipo de documento del cliente: "+ANSI_RESET);
-        String tipoDni = sc.next().toUpperCase();
-        System.out.println(ANSI_WHITE+"Ingrese el numero de documento del ciente: "+ANSI_RESET);
-        String dni = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad de origen del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadOrigen = sc.next();        
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadDestino = sc.next();
-        if(pedidos.eliminarArco(ciudadOrigen, ciudadDestino, tipoDni+dni)){
-            System.out.println(ANSI_GREEN+"PEDIDO ELIMINADO CON EXITO"+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"EL PEDIDO NO PUDO SER ELIMINADO"+ANSI_RESET);
+        try {
+            FileWriter fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos necesarios a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo de documento del cliente: "+ANSI_RESET);
+            String tipoDni = sc.next().toUpperCase();
+            System.out.println(ANSI_WHITE+"Ingrese el numero de documento del ciente: "+ANSI_RESET);
+            String dni = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad de origen del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadOrigen = sc.next();        
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadDestino = sc.next();
+            if(pedidos.eliminarArco(ciudadOrigen, ciudadDestino, tipoDni+dni)){
+                bufferedWriter.write("SE ELIMINO EL PEDIDO DEL CLIENTE "+tipoDni+dni+" QUE IBA DESDE "+ciudadOrigen+" A "+ciudadDestino+"\n");
+                System.out.println(ANSI_GREEN+"PEDIDO ELIMINADO CON EXITO"+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"EL PEDIDO NO PUDO SER ELIMINADO"+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
 
     }
 
     public static void agregarPedido(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo pedido a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad origen del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadOrigen = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese la ciudad destino del pedido (codigo postal): "+ANSI_RESET);
-        String ciudadDestino = sc.next();
-        if(rutas.existeCamino(ciudadOrigen, ciudadDestino)){
-            System.out.println(ANSI_WHITE+"Ingrese la fecha del pedido: "+ANSI_RESET);
-            String fecha = sc.next();
-            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente: "+ANSI_RESET);
-            String tipoDni = sc.next();
-            System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente"+ANSI_RESET);
-            int dni = sc.nextInt();
-            System.out.println(ANSI_WHITE+"Ingrese la cantidad de metros cubicos a ocupar en el camion: "+ANSI_RESET);
-            int metrosCubicos = sc.nextInt();
-            System.out.println(ANSI_WHITE+"Ingrese la cantidad de bultos del pedido: "+ANSI_RESET);
-            int cantBultos = sc.nextInt();
-            System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de retiro del pedido: "+ANSI_RESET);
-            String direccionRetiro = sc.nextLine();
-            direccionRetiro = sc.nextLine();
-            System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de entrega del pedido: "+ANSI_RESET);
-            String direccionEntrega = sc.nextLine();
-            System.out.println(ANSI_WHITE+"Ingrese si el pedido esta pago o no (SI para true NO para false): "+ANSI_RESET);
-            String respuestaPago = sc.next();
-            boolean estaPago = "SI".equals(respuestaPago.toUpperCase());
-            pedidos.insertarArco(ciudadOrigen, ciudadDestino, new SolicitudViaje(fecha, tipoDni, dni,metrosCubicos,cantBultos,direccionRetiro,direccionEntrega,estaPago,ciudadDestino,ciudadOrigen));
-            System.out.println(ANSI_GREEN+"EL PEDIDO FUE AGREGADO CON EXITO"+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"NO EXISTE UNA RUTA ENTRE LAS CIUDADES, NO SE PUEDE AGREGAR EL PEDIDO."+ANSI_RED);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo pedido a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad origen del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadOrigen = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese la ciudad destino del pedido (codigo postal): "+ANSI_RESET);
+            String ciudadDestino = sc.next();
+            if(rutas.existeCamino(ciudadOrigen, ciudadDestino)){
+                System.out.println(ANSI_WHITE+"Ingrese la fecha del pedido: "+ANSI_RESET);
+                String fecha = sc.next();
+                System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente: "+ANSI_RESET);
+                String tipoDni = sc.next();
+                System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente"+ANSI_RESET);
+                int dni = sc.nextInt();
+                System.out.println(ANSI_WHITE+"Ingrese la cantidad de metros cubicos a ocupar en el camion: "+ANSI_RESET);
+                int metrosCubicos = sc.nextInt();
+                System.out.println(ANSI_WHITE+"Ingrese la cantidad de bultos del pedido: "+ANSI_RESET);
+                int cantBultos = sc.nextInt();
+                System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de retiro del pedido: "+ANSI_RESET);
+                String direccionRetiro = sc.nextLine();
+                direccionRetiro = sc.nextLine();
+                System.out.println(ANSI_WHITE+"Ingrese la direccion del domicilio de entrega del pedido: "+ANSI_RESET);
+                String direccionEntrega = sc.nextLine();
+                System.out.println(ANSI_WHITE+"Ingrese si el pedido esta pago o no (SI para true NO para false): "+ANSI_RESET);
+                String respuestaPago = sc.next();
+                boolean estaPago = "SI".equals(respuestaPago.toUpperCase());
+                SolicitudViaje aux = new SolicitudViaje(fecha, tipoDni, dni,metrosCubicos,cantBultos,direccionRetiro,direccionEntrega,estaPago,ciudadDestino,ciudadOrigen);
+                pedidos.insertarArco(ciudadOrigen, ciudadDestino, aux);
+                bufferedWriter.write("SE AGREGO LA SOLICITUD: "+aux.toString()+"\n");
+                System.out.println(ANSI_GREEN+"EL PEDIDO FUE AGREGADO CON EXITO"+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"NO EXISTE UNA RUTA ENTRE LAS CIUDADES, NO SE PUEDE AGREGAR EL PEDIDO."+ANSI_RED);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void menuABMPedidos(){
@@ -580,88 +609,119 @@ public class Main {
     }
 
     public static void eliminarCliente(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a eliminar: "+ANSI_RESET);
-        String tipoDni = sc.next().toUpperCase();
-        System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a eliminar:"+ANSI_RESET);
-        String dni = sc.next();
-        if(clientes.containsKey(tipoDni+dni)){
-            clientes.remove(tipoDni+dni);
-            System.out.println(ANSI_GREEN+"EL CLIENTE FUE ELIMINADO CON EXITO"+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"EL CLIENTE NO ESTA INGRESADO, POR ENDE NO FUE ELIMINADO"+ANSI_RED);
+        try {
+            FileWriter fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a eliminar: "+ANSI_RESET);
+            String tipoDni = sc.next().toUpperCase();
+            System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a eliminar:"+ANSI_RESET);
+            String dni = sc.next();
+            if(clientes.containsKey(tipoDni+dni)){
+                Cliente aux = clientes.get(tipoDni+dni);
+                bufferedWriter.write("SE ELIMINO EL CLIENTE "+aux.getNombre()+" "+aux.getApellido()+"\n");
+                clientes.remove(tipoDni+dni);
+                System.out.println(ANSI_GREEN+"EL CLIENTE FUE ELIMINADO CON EXITO"+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"EL CLIENTE NO ESTA INGRESADO, POR ENDE NO FUE ELIMINADO"+ANSI_RED);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     public static void editarCliente(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a editar: "+ANSI_RESET);
-        String tipoDni = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a editar:"+ANSI_RESET);
-        String dni = sc.next();
-        if(clientes.containsKey(tipoDni+dni)){
-            System.out.println(ANSI_YELLOW+"<> 1. Editar nombre. \n<> 2. Editar apellido. \n<> 3. Editar numero de telefono.\n<> 4. Editar e-mail.\n<> 5. Volver al ABMClientes"+ANSI_RESET);
-            int respuesta = sc.nextInt();
-            switch(respuesta){
-                case 1:
-                    System.out.println(ANSI_WHITE+"Ingrese el nuevo nombre del cliente (en un solo mensaje): "+ANSI_RESET);
-                    String nombre = sc.nextLine();
-                    nombre = sc.nextLine();
-                    clientes.get(tipoDni+dni).setNombre(nombre);
-                    System.out.println(ANSI_GREEN+"EL NOMBRE FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
-                break;
-                case 2:
-                    System.out.println(ANSI_WHITE+"Ingrese el nuevo apellido del cliente (en un solo mensaje): "+ANSI_RESET);
-                    String apellido = sc.nextLine();
-                    apellido = sc.nextLine();
-                    clientes.get(tipoDni+dni).setApellido(apellido);
-                    System.out.println(ANSI_GREEN+"EL APELLIDO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
-                break;
-                case 3:
-                    System.out.println(ANSI_WHITE+"Ingrese el nuevo numero de telefono del cliente: "+ANSI_RESET);
-                    String numero = sc.nextLine();
-                    numero = sc.nextLine();
-                    clientes.get(tipoDni+dni).setTelefono(numero);
-                    System.out.println(ANSI_GREEN+"EL NUMERO DE TELEFONO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
-                break;
-                case 4:
-                    System.out.println(ANSI_WHITE+"Ingrese el nuevo e-mail del cliente: "+ANSI_RESET);
-                    String email = sc.nextLine();
-                    email = sc.nextLine();
-                    clientes.get(tipoDni+dni).setEmail(email);
-                    System.out.println(ANSI_GREEN+"EL EMAIL FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
-                break;
-                case 5:
-                break;
-                default:
-                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
-                break;
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos del cliente a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente a editar: "+ANSI_RESET);
+            String tipoDni = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el DNI del cliente a editar:"+ANSI_RESET);
+            String dni = sc.next();
+            if(clientes.containsKey(tipoDni+dni)){
+                System.out.println(ANSI_YELLOW+"<> 1. Editar nombre. \n<> 2. Editar apellido. \n<> 3. Editar numero de telefono.\n<> 4. Editar e-mail.\n<> 5. Volver al ABMClientes"+ANSI_RESET);
+                int respuesta = sc.nextInt();
+                switch(respuesta){
+                    case 1:
+                        System.out.println(ANSI_WHITE+"Ingrese el nuevo nombre del cliente (en un solo mensaje): "+ANSI_RESET);
+                        String nombre = sc.nextLine();
+                        nombre = sc.nextLine();
+                        clientes.get(tipoDni+dni).setNombre(nombre);
+                        bufferedWriter.write("SE ACTUALIZO EL NOMBRE DE "+tipoDni+": "+dni+" A "+nombre+"\n");
+                        System.out.println(ANSI_GREEN+"EL NOMBRE FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                    break;
+                    case 2:
+                        System.out.println(ANSI_WHITE+"Ingrese el nuevo apellido del cliente (en un solo mensaje): "+ANSI_RESET);
+                        String apellido = sc.nextLine();
+                        apellido = sc.nextLine();
+                        clientes.get(tipoDni+dni).setApellido(apellido);
+                        bufferedWriter.write("SE ACTUALIZO EL APELLIDO DE "+tipoDni+": "+dni+" A "+apellido+"\n");
+                        System.out.println(ANSI_GREEN+"EL APELLIDO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                    break;
+                    case 3:
+                        System.out.println(ANSI_WHITE+"Ingrese el nuevo numero de telefono del cliente: "+ANSI_RESET);
+                        String numero = sc.nextLine();
+                        numero = sc.nextLine();
+                        clientes.get(tipoDni+dni).setTelefono(numero);
+                        bufferedWriter.write("SE ACTUALIZO EL NUMERO DE TELEFONO DE "+tipoDni+": "+dni+" A "+numero+"\n");
+                        System.out.println(ANSI_GREEN+"EL NUMERO DE TELEFONO FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                    break;
+                    case 4:
+                        System.out.println(ANSI_WHITE+"Ingrese el nuevo e-mail del cliente: "+ANSI_RESET);
+                        String email = sc.nextLine();
+                        email = sc.nextLine();
+                        clientes.get(tipoDni+dni).setEmail(email);
+                        bufferedWriter.write("SE ACTUALIZO EL EMAIL DE "+tipoDni+": "+dni+" A "+email+"\n");
+                        System.out.println(ANSI_GREEN+"EL EMAIL FUE ACTUALIZADO CON EXITO"+ANSI_RESET);
+                    break;
+                    case 5:
+                    break;
+                    default:
+                        System.out.println(ANSI_RED+"RESPUESTA INVALIDA."+ANSI_RESET);
+                    break;
+                }
             }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-
     public static void agregarCliente(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo cliente a continuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del nuevo cliente: "+ANSI_RESET);
-        String tipoDni = sc.next().toUpperCase();
-        System.out.println(ANSI_WHITE+"Ingrese el DNI del nuevo cliente"+ANSI_RESET);
-        String dni = sc.next();
-        if(!clientes.containsKey(tipoDni+dni)){
-            System.out.println(ANSI_WHITE+"Ingrese el/los apellido/s del nuevo cliente (en un solo mensaje): "+ANSI_RESET);
-            String apellidos = sc.nextLine();
-            apellidos = sc.nextLine();
-            System.out.println(ANSI_WHITE+"Ingrese el/los nombre/s del nuevo cliente (en un solo mensaje): "+ANSI_RESET);
-            String nombres = sc.nextLine();
-            System.out.println(ANSI_WHITE+"Ingrese el numero de telefono del nuevo cliente: "+ANSI_RESET);
-            String telefono = sc.nextLine();
-            System.out.println(ANSI_WHITE+"Ingrese el email del nuevo cliente: "+ANSI_RESET);
-            String email = sc.nextLine();
-            clientes.put(tipoDni+dni, new Cliente(tipoDni, dni, apellidos, nombres, telefono, email));
-            System.out.println(ANSI_GREEN+"CLIENTE AGREGADO CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"EL CLIENTE YA ESTABA INGRESADO, POR ENDE NO FUE AGREGADO."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos del nuevo cliente a continuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del nuevo cliente: "+ANSI_RESET);
+            String tipoDni = sc.next().toUpperCase();
+            System.out.println(ANSI_WHITE+"Ingrese el DNI del nuevo cliente"+ANSI_RESET);
+            String dni = sc.next();
+            if(!clientes.containsKey(tipoDni+dni)){
+                System.out.println(ANSI_WHITE+"Ingrese el/los apellido/s del nuevo cliente (en un solo mensaje): "+ANSI_RESET);
+                String apellidos = sc.nextLine();
+                apellidos = sc.nextLine();
+                System.out.println(ANSI_WHITE+"Ingrese el/los nombre/s del nuevo cliente (en un solo mensaje): "+ANSI_RESET);
+                String nombres = sc.nextLine();
+                System.out.println(ANSI_WHITE+"Ingrese el numero de telefono del nuevo cliente: "+ANSI_RESET);
+                String telefono = sc.nextLine();
+                System.out.println(ANSI_WHITE+"Ingrese el email del nuevo cliente: "+ANSI_RESET);
+                String email = sc.nextLine();
+                Cliente aux = new Cliente(tipoDni, dni, apellidos, nombres, telefono, email);
+                clientes.put(tipoDni+dni, aux);
+                bufferedWriter.write("SE AGREGO EL CLIENTE: "+aux.toString()+"\n");
+                System.out.println(ANSI_GREEN+"CLIENTE AGREGADO CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"EL CLIENTE YA ESTABA INGRESADO, POR ENDE NO FUE AGREGADO."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void  menuABMClientes(){
@@ -695,49 +755,78 @@ public class Main {
     }
 
     public static void editarRuta(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos de la ruta a editar a cotinuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la ruta a editar: "+ANSI_RESET);
-        String codPostal1 = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la ruta a editar: "+ANSI_RESET);
-        String codPostal2 = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese la nueva distancia en kilometros entre las 2 ciudades: "+ANSI_RESET);
-        double kilometros = sc.nextDouble();
-        if(rutas.eliminarArco(codPostal1, codPostal2)){
-            rutas.insertarArco(codPostal1, codPostal2, kilometros);
-            System.out.println(ANSI_GREEN+"RUTA EDITADA CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"LA RUTA NO PUDO SER EDITADA."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos de la ruta a editar a cotinuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la ruta a editar: "+ANSI_RESET);
+            String codPostal1 = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la ruta a editar: "+ANSI_RESET);
+            String codPostal2 = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese la nueva distancia en kilometros entre las 2 ciudades: "+ANSI_RESET);
+            double kilometros = sc.nextDouble();
+            if(rutas.eliminarArco(codPostal1, codPostal2)){
+                bufferedWriter.write("SE ACTUALIZARON LOS KILOMETROS A "+kilometros+" DE LA RUTA QUE VA DESDE "+codPostal1+" A "+codPostal2+"\n");
+                rutas.insertarArco(codPostal1, codPostal2, kilometros);
+                System.out.println(ANSI_GREEN+"RUTA EDITADA CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"LA RUTA NO PUDO SER EDITADA."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
         
     }
 
     public static void eliminarRuta(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos de la ruta a eliminar a cotinuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la ruta a eliminar: "+ANSI_RESET);
-        String codPostal1 = sc.next();
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la ruta a eliminar: "+ANSI_RESET);
-        String codPostal2 = sc.next();
-        if(rutas.eliminarArco(codPostal1, codPostal2)){
-            System.out.println(ANSI_GREEN+"RUTA ELIMINADA CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"LA RUTA NO PUDO SER ELIMINADA."+ANSI_RESET);
-        }
+        try {
+            FileWriter fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos de la ruta a eliminar a cotinuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la ruta a eliminar: "+ANSI_RESET);
+            String codPostal1 = sc.next();
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la ruta a eliminar: "+ANSI_RESET);
+            String codPostal2 = sc.next();
+            if(rutas.eliminarArco(codPostal1, codPostal2)){
+                bufferedWriter.write("SE ELIMINO LA RUTA QUE VA DESDE "+codPostal1+" A "+codPostal2+"\n");
+                System.out.println(ANSI_GREEN+"RUTA ELIMINADA CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"LA RUTA NO PUDO SER ELIMINADA."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        };
+        
     }
 
     public static void agregarRuta(){
-        System.out.println(ANSI_WHITE+"Ingrese los datos de la nueva ruta a cotinuacion: "+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la nueva ruta: "+ANSI_RESET);
-        String codPostal1 = sc.nextLine();
-        codPostal1 = sc.nextLine();
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la nueva ruta: "+ANSI_RESET);
-        String codPostal2 = sc.nextLine();
-        System.out.println(ANSI_WHITE+"Ingrese la distancia en kilometros entre las 2 ciudades: "+ANSI_RESET);
-        double kilometros = sc.nextDouble();
-        if(rutas.insertarArco(codPostal1, codPostal2, kilometros)){
-            System.out.println(ANSI_GREEN+"RUTA INSERTADA CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"LA RUTA NO PUDO SER INSERTADA."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese los datos de la nueva ruta a cotinuacion: "+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad origen de la nueva ruta: "+ANSI_RESET);
+            String codPostal1 = sc.nextLine();
+            codPostal1 = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad destino de la nueva ruta: "+ANSI_RESET);
+            String codPostal2 = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Ingrese la distancia en kilometros entre las 2 ciudades: "+ANSI_RESET);
+            double kilometros = sc.nextDouble();
+            if(rutas.insertarArco(codPostal1, codPostal2, kilometros)){
+                bufferedWriter.write("SE AGREGO UNA RUTA QUE VA DESDE "+codPostal1+" A "+codPostal2+" CON UNA DISTANCIA DE "+kilometros+" KILOMETROS\n");
+                System.out.println(ANSI_GREEN+"RUTA INSERTADA CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"LA RUTA NO PUDO SER INSERTADA."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void menuABMRutas(){
@@ -758,7 +847,6 @@ public class Main {
                     eliminarCiudad();
                 break;
                 case 3:
-              
                     editarCiudad();
                 break;
                 case 4:
@@ -778,71 +866,103 @@ public class Main {
     }
 
     public static void editarCiudad(){
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad que quiere editar: "+ANSI_RESET);
-        String codigoPostal = sc.nextLine();
-        codigoPostal = sc.nextLine();
-        Ciudad aux = (Ciudad)ciudades.obtenerDato(codigoPostal);
-        if(aux!=null){
-            System.out.println(ANSI_YELLOW+"<> 1. Editar nombre.\n<> 2. Editar provincia."+ANSI_RESET);
-            int respuesta = sc.nextInt();
-            switch(respuesta){
-                case 1:
-                    System.out.println(ANSI_WHITE+"Ingrese el nuevo nombre:"+ANSI_RESET);
-                    String nuevoNomb = sc.nextLine();
-                    nuevoNomb = sc.nextLine();
-                    aux.setNombre(nuevoNomb);
-                    System.out.println(ANSI_GREEN+"NOMBRE DE LA CIUDAD EDITADO CON EXITO."+ANSI_RESET);
-                break;
-                case 2:
-                    System.out.println(ANSI_WHITE+"Ingrese la nueva provincia:"+ANSI_RESET);
-                    String nuevaProv = sc.nextLine();
-                    nuevaProv = sc.nextLine();
-                    aux.setProvincia(nuevaProv);
-                    System.out.println(ANSI_RED+"PROVINCIA DE LA CIUDAD EDITADO CON EXITO."+ANSI_RESET);
-                break;
-                default:
-                    System.out.println(ANSI_RED+"RESPUESTA INVALIDA, volviendo al ABM."+ANSI_RESET);
-                break;
-            }   
-        } else {
-            System.out.println(ANSI_RED+"CIUDAD NO ENCONTRADA, volviendo al ABM."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad que quiere editar: "+ANSI_RESET);
+            String codigoPostal = sc.nextLine();
+            codigoPostal = sc.nextLine();
+            Ciudad aux = (Ciudad)ciudades.obtenerDato(codigoPostal);
+            if(aux!=null){
+                System.out.println(ANSI_YELLOW+"<> 1. Editar nombre.\n<> 2. Editar provincia."+ANSI_RESET);
+                int respuesta = sc.nextInt();
+                switch(respuesta){
+                    case 1:
+                        System.out.println(ANSI_WHITE+"Ingrese el nuevo nombre:"+ANSI_RESET);
+                        String nuevoNomb = sc.nextLine();
+                        nuevoNomb = sc.nextLine();
+                        bufferedWriter.write("SE CAMBIO EL NOMBRE DE LA CIUDAD "+aux.getNombre()+" A "+nuevoNomb+"\n");
+                        aux.setNombre(nuevoNomb);
+                        System.out.println(ANSI_GREEN+"NOMBRE DE LA CIUDAD EDITADO CON EXITO."+ANSI_RESET);
+                    break;
+                    case 2:
+                        System.out.println(ANSI_WHITE+"Ingrese la nueva provincia:"+ANSI_RESET);
+                        String nuevaProv = sc.nextLine();
+                        nuevaProv = sc.nextLine();
+                        bufferedWriter.write("SE CAMBIO LA PROVINCIA DE LA CIUDAD "+aux.getNombre()+" A "+nuevaProv+"\n");
+                        aux.setProvincia(nuevaProv);
+                        System.out.println(ANSI_RED+"PROVINCIA DE LA CIUDAD EDITADO CON EXITO."+ANSI_RESET);
+                    break;
+                    default:
+                        System.out.println(ANSI_RED+"RESPUESTA INVALIDA, volviendo al ABM."+ANSI_RESET);
+                    break;
+                }
+            } else {
+                System.out.println(ANSI_RED+"CIUDAD NO ENCONTRADA, volviendo al ABM."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void eliminarCiudad(){
-        System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad que quiere eliminar: "+ANSI_RESET);
-        String codigoPostal = sc.nextLine();
-        codigoPostal = sc.nextLine();
-        if(ciudades.eliminar(codigoPostal) && pedidos.eliminarVertice(codigoPostal) && rutas.eliminarVertice(codigoPostal)){
-            System.out.println(ANSI_GREEN+"LA CIUDAD FUE ELIMINADA CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"LA CIUDAD INDICADA NO EXISTE."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad que quiere eliminar: "+ANSI_RESET);
+            String codigoPostal = sc.nextLine();
+            codigoPostal = sc.nextLine();
+            String nombreCiudad = ((Ciudad)ciudades.obtenerDato(codigoPostal)).getNombre();
+            if(ciudades.eliminar(codigoPostal) && pedidos.eliminarVertice(codigoPostal) && rutas.eliminarVertice(codigoPostal)){
+                bufferedWriter.write("SE ELIMINO LA CIUDAD "+nombreCiudad+"\n");
+                System.out.println(ANSI_GREEN+"LA CIUDAD FUE ELIMINADA CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"LA CIUDAD INDICADA NO EXISTE."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void agregarCiudad(){
-        /*
-        este metodo agrega una ciudad en cada estructura que almacena ciudades del programa,
-        para que asi se mantenga una coherencia en el sistema
-        */
-        String nombre, provincia;
-        //tiene que ser int para poder usarlo al comparar en diccionario
-        int codigoPostal;
-        System.out.println(ANSI_WHITE+"Ingrese los datos de la nueva ciudad a continuacion:"+ANSI_RESET);
-        System.out.println(ANSI_WHITE+"Nombre de la ciudad:"+ANSI_RESET);
-        nombre = sc.nextLine();
-        nombre = sc.nextLine();
-        System.out.println(ANSI_WHITE+"Provincia de la ciudad:"+ANSI_RESET);
-        provincia = sc.nextLine();
-        System.out.println(ANSI_WHITE+"Codigo postal de la ciudad:"+ANSI_RESET);
-        codigoPostal = sc.nextInt();
-        Ciudad unaCiudad = new Ciudad(String.valueOf(codigoPostal), nombre, provincia);
-        boolean exito = ciudades.insertar(codigoPostal, unaCiudad) && pedidos.insertarVertice(unaCiudad) && rutas.insertarVertice(unaCiudad);
-        if(exito){
-            System.out.println(ANSI_GREEN+"LA CIUDAD FUE AGREGADA CON EXITO."+ANSI_RESET);
-        } else {
-            System.out.println(ANSI_RED+"LA CIUDAD YA ESTABA INGRESADA, POR ENDE NO PUDO SER AGREGADA."+ANSI_RESET);
+        FileWriter fileWriter;
+        try {
+            fileWriter = new FileWriter("tpo\\operacionesABM.txt");
+            BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
+            /*
+            este metodo agrega una ciudad en cada estructura que almacena ciudades del programa,
+            para que asi se mantenga una coherencia en el sistema
+            */
+            String nombre, provincia;
+            //tiene que ser int para poder usarlo al comparar en diccionario
+            int codigoPostal;
+            System.out.println(ANSI_WHITE+"Ingrese los datos de la nueva ciudad a continuacion:"+ANSI_RESET);
+            System.out.println(ANSI_WHITE+"Nombre de la ciudad:"+ANSI_RESET);
+            nombre = sc.nextLine();
+            nombre = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Provincia de la ciudad:"+ANSI_RESET);
+            provincia = sc.nextLine();
+            System.out.println(ANSI_WHITE+"Codigo postal de la ciudad:"+ANSI_RESET);
+            codigoPostal = sc.nextInt();
+            Ciudad unaCiudad = new Ciudad(String.valueOf(codigoPostal), nombre, provincia);
+            boolean exito = ciudades.insertar(codigoPostal, unaCiudad) && pedidos.insertarVertice(unaCiudad) && rutas.insertarVertice(unaCiudad);
+            if(exito){
+                bufferedWriter.write("SE AGREGO LA CIUDAD "+unaCiudad.toString()+"\n");
+                System.out.println(ANSI_GREEN+"LA CIUDAD FUE AGREGADA CON EXITO."+ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED+"LA CIUDAD YA ESTABA INGRESADA, POR ENDE NO PUDO SER AGREGADA."+ANSI_RESET);
+            }
+            bufferedWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        
     }
 
     public static void menuABMCiudades(){
