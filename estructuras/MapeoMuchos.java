@@ -1,5 +1,7 @@
 package estructuras;
 
+import tpo.SolicitudViaje;
+
 public class MapeoMuchos {
     NodoAVLMapeo raiz;
 
@@ -9,6 +11,121 @@ public class MapeoMuchos {
 
     public boolean esVacia(){
         return this.raiz==null;
+    }
+
+    public String toString() {
+        String resultado = toStringAux(this.raiz);
+        return resultado;
+    }
+
+    private String toStringAux(NodoAVLMapeo nodo) {
+        String toString = "Arbol vacio";
+        if (nodo != null) {
+            toString = nodo.getRango().toString() + " | " + "altura: " + nodo.getAltura();
+            NodoAVLMapeo hijoIzq = nodo.getIzquierdo();
+            NodoAVLMapeo hijoDer = nodo.getDerecho();
+            if (hijoIzq != null) {
+                toString = toString + ", H.I: " + hijoIzq.getRango().toString();
+
+            } else {
+                toString = toString + ", H.I: -";
+            }
+            if (hijoDer != null) {
+                toString = toString + ", H.D: " + hijoDer.getRango().toString() + "\n";
+            } else {
+                toString = toString + ", H.D: -\n";
+            }
+
+            if (hijoIzq != null) {
+                toString = toString + toStringAux(hijoIzq);
+            }
+
+            if (hijoDer != null) {
+                toString = toString + toStringAux(hijoDer);
+            }
+        }
+        return toString;
+    }
+
+    public Lista listarValoresDe(Object dominio, Object unRango){
+        Lista resultado = new Lista();
+        if(this.raiz!=null){
+            listarValoresDeAux(dominio, String.valueOf(unRango),raiz,resultado);
+        }
+        return resultado;
+    }
+
+    private void listarValoresDeAux(Object dominio, String unRango, NodoAVLMapeo nAux, Lista resultado) {
+        if(nAux!=null){
+            if(nAux.getDominio().compareTo(dominio)==0){
+                int i = 1, longitud = nAux.getRango().longitud();
+                while(i<=longitud){
+                    System.out.println("sssssssssssss");
+                    System.out.println(((SolicitudViaje)nAux.getRango().recuperar(i)).getCiudadDestino()+ " aaa "+unRango);
+                    if(((SolicitudViaje)nAux.getRango().recuperar(i)).getCiudadDestino().equals(unRango)){
+                        resultado.insertar((SolicitudViaje)nAux.getRango().recuperar(i), resultado.longitud()+1);
+                        System.out.println("aaaaaaaaa");
+                    }
+                    i++;
+                }
+            } else {
+                if(nAux.getDominio().compareTo(dominio)<0){
+                    listarValoresDeAux(dominio, unRango, nAux.getDerecho(),resultado);
+                } else {
+                    listarValoresDeAux(dominio, unRango, nAux.getIzquierdo(),resultado);
+                }
+            }
+        }
+    }
+
+    public Object obtenerRangoEntre(Object dominio, Object unRango){
+        Object resultado = null;
+        if(this.raiz!=null){
+            resultado = obtenerRangoEntreAux(dominio, unRango,raiz);
+        }
+        return resultado;
+    }
+
+    private Object obtenerRangoEntreAux(Object dominio, Object unRango,NodoAVLMapeo nAux) {
+        Object resultado = null;
+        if(nAux!=null){
+            if(nAux.getDominio().compareTo(dominio)==0){
+                int i = nAux.getRango().buscarPosicionSolicitud((String) unRango);
+                resultado = nAux.getRango().recuperar(i);
+            } else {
+                if(nAux.getDominio().compareTo(dominio)<0){
+                    resultado = obtenerRangoEntreAux(dominio, unRango, nAux.getDerecho());
+                } else {
+                    resultado = obtenerRangoEntreAux(dominio, unRango, nAux.getIzquierdo());
+                }
+            }
+        }
+        return resultado;
+    }
+
+    public Object obtenerRangoDe(Object dominio, Object unRango, Object identificador){
+        Object resultado = null;
+        if(this.raiz!=null){
+            resultado = obtenerRangoDeAux(dominio, unRango, identificador, raiz);
+        }
+        return resultado;
+    }
+
+    private Object obtenerRangoDeAux(Object dominio, Object unRango, Object identificador, NodoAVLMapeo nAux) {
+        Object resultado = null;
+        if(nAux!=null){
+            if(nAux.getDominio().compareTo(dominio)==0){
+                int i = nAux.getRango().buscarPosicionSolicitudDe((String) unRango, (String)identificador);
+                resultado = nAux.getRango().recuperar(i);
+            } else {
+                if(nAux.getDominio().compareTo(dominio)<0){
+                    resultado = obtenerRangoDeAux(dominio, unRango, identificador, nAux.getDerecho());
+                } else {
+                    resultado = obtenerRangoDeAux(dominio, unRango, identificador, nAux.getIzquierdo());
+                }
+            }
+        }
+        return resultado;
     }
 
     public Lista obtenerConjuntoRango(){
@@ -72,21 +189,21 @@ public class MapeoMuchos {
         return resultado;
     }
 
-    public boolean desasociar(Comparable<Object> unDominio, Object unRango) {
+    public boolean desasociar(Comparable<Object> unDominio, Object unRango, String identificador) {
         boolean exito = false;
         if (this.raiz != null) {
-            exito = desasociarAux(null, null, this.raiz, unDominio, unRango);
+            exito = desasociarAux(null, null, this.raiz, unDominio, unRango, identificador);
         }
         return exito;
     }
 
     private boolean desasociarAux(NodoAVLMapeo abuelo, NodoAVLMapeo padre, NodoAVLMapeo nAux,
-        Comparable<Object> unDominio, Object unRango) {
+        Comparable<Object> unDominio, Object unRango, String identificador) {
         boolean exito = false;
         if (nAux != null) {
             Comparable<Object> dominioActual = nAux.getDominio(); // clave del nodo actual
             if (dominioActual.compareTo(unDominio) == 0) {
-                int posicionEliminar = nAux.getRango().localizar(dominioActual);
+                int posicionEliminar = nAux.getRango().buscarPosicionSolicitudDe((String)unRango, identificador);
                 exito = nAux.getRango().eliminar(posicionEliminar);
                 if (nAux.getRango().esVacia() && exito) {
                     if (nAux.getIzquierdo() != null && nAux.getDerecho() != null) {
@@ -139,7 +256,6 @@ public class MapeoMuchos {
                                 } else {
                                     this.raiz = raiz.getDerecho();
                                 }
-
                             }
                         }
                     }
@@ -149,87 +265,7 @@ public class MapeoMuchos {
         return exito;
     }
 
-    public boolean eliminar(Comparable<Object> unaClave) {
-        boolean exito = false;
-        if (this.raiz != null) {
-            exito = eliminarAux(null, null, this.raiz, unaClave);
-        }
-        return exito;
-    }
-
-    private boolean eliminarAux(NodoAVLMapeo abuelo, NodoAVLMapeo padre, NodoAVLMapeo nAux, Comparable<Object> claveEliminar) {
-        boolean exito = false;
-        if (nAux != null) {
-            Comparable<Object> claveAux = nAux.getDominio(); // clave del nodo actual
-            if (claveAux.compareTo(claveEliminar) == 0) {
-                // el nodo es encontrado
-                exito = true;
-                if (nAux.getIzquierdo() != null && nAux.getDerecho() != null) {
-                    // caso en el que tiene ambos hijos, puede ser necesario balancear en caso de
-                    // eliminacion
-                    NodoAVLMapeo reemplazo = obtenerReemplazo(nAux);
-                    nAux.setDominio(reemplazo.getDominio());
-                    nAux.setRango(reemplazo.getRango());
-                    nAux.recalcularAltura();
-                    padre.recalcularAltura();
-                    balancear(balance(nAux), nAux, padre);
-                } else {
-                    if (nAux.getIzquierdo() == null && nAux.getDerecho() == null) {
-                        // caso en el que no tiene hijos, puede ser necesario balancear en caso de
-                        // eliminacion
-                        if (padre != null) {
-
-                            if (padre.getDerecho() != null) {
-                                if (padre.getDerecho().getDominio().equals(claveEliminar)) {
-                                    padre.setDerecho(null);
-                                } else {
-                                    padre.setIzquierdo(null);
-                                }
-                            } else {
-                                padre.setIzquierdo(null);
-                            }
-                            padre.recalcularAltura();
-                            abuelo.recalcularAltura();
-                            balancear(balance(padre), padre, abuelo);
-                        } else {
-                            this.raiz = null;
-                        }
-                    } else {
-                        // caso en el que solamente tiene uno de los dos hijos
-                        if (nAux.getIzquierdo() != null) {
-                            if (padre != null) {
-                                if (padre.getDominio().compareTo(nAux.getDominio()) < 0) {
-                                    padre.setDerecho(nAux.getIzquierdo());
-                                } else {
-                                    padre.setIzquierdo(nAux.getIzquierdo());
-                                }
-                            } else {
-                                this.raiz = raiz.getIzquierdo();
-                            }
-                        } else if (nAux.getDerecho() != null) {
-                            if (padre != null) {
-                                if (padre.getDominio().compareTo(nAux.getDominio()) < 0) {
-                                    padre.setDerecho(nAux.getDerecho());
-                                } else {
-                                    padre.setIzquierdo(nAux.getDerecho());
-                                }
-                            } else {
-                                this.raiz = raiz.getDerecho();
-                            }
-
-                        }
-                    }
-                }
-            } else {
-                if (claveAux.compareTo(claveEliminar) > 0) {
-                    exito = eliminarAux(padre, nAux, nAux.getIzquierdo(), claveEliminar);
-                } else {
-                    exito = eliminarAux(padre, nAux, nAux.getDerecho(), claveEliminar);
-                }
-            }
-        }
-        return exito;
-    }
+   
 
     private NodoAVLMapeo obtenerReemplazo(NodoAVLMapeo nAux) {
         NodoAVLMapeo reemplazo = null;

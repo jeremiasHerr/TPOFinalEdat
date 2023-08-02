@@ -27,7 +27,7 @@ public class SolicitudViaje {
 
     public String toString(){
         String res;
-        res = "Ciudad destino: "+ciudadDestino+" | Ciudad origen: "+ciudadDestino+" | Fecha: "+fechaSolicitud+" | Cantidad de bultos: "+cantBultos+" | Metros cubicos: "+cantMetrosCubicos;
+        res = "Ciudad destino: "+ciudadDestino+" | Ciudad origen: "+ciudadOrigen/* " | Fecha: "+fechaSolicitud+" | Cantidad de bultos: "+cantBultos+" | Metros cubicos: "+cantMetrosCubicos*/;
         return res;
     }
 

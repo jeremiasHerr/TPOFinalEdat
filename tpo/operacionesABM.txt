@@ -1,1 +1,16 @@
-SE EDITO LA CANTIDAD DE METROS CUBOS EN LA SOLICITUD DE VIAJE DEL CLIENTE: CUIT20357896
+SE AGREGO EL CLIENTE: 444: 222 | Nombre/s: herrera | Apellido/s: jere | E-mail: jeh201 | Numero de telefono: 200092
+
+SE AGREGO EL CLIENTE: CIUT: 9892 | Nombre/s: aaaa | Apellido/s: fran | E-mail: fran | Numero de telefono: 2091
+
+SE AGREGO EL CLIENTE: DNI: 444 | Nombre/s: jer | Apellido/s: her | E-mail: jeh2011 | Numero de telefono: 209
+SE AGREGO EL CLIENTE: CIUT: 92832 | Nombre/s: fran | Apellido/s: fran | E-mail: fran2 | Numero de telefono: 9209
+SE AGREGO LA CIUDAD [32mCod. Postal: 8300[0m | Ciudad: neuquen | Provincia: neuquen
+SE AGREGO LA CIUDAD [32mCod. Postal: 8316[0m | Ciudad: plottier | Provincia: neuquen
+SE AGREGO LA CIUDAD [32mCod. Postal: 8324[0m | Ciudad: cipoletti | Provincia: rio negro
+SE AGREGO UNA RUTA QUE VA DESDE 8300 A 8324 CON UNA DISTANCIA DE 10.0 KILOMETROSSE AGREGO UNA RUTA QUE VA DESDE 8316 A 8324 CON UNA DISTANCIA DE 16.0 KILOMETROSSE AGREGO LA CIUDAD [32mCod. Postal: 8300[0m | Ciudad: neuquenn | Provincia: neuqn
+SE AGREGO LA CIUDAD [32mCod. Postal: 8316[0m | Ciudad: plottier | Provincia: nqueun
+SE AGREGO LA CIUDAD [32mCod. Postal: 8324[0m | Ciudad: cipo | Provincia: rionegro
+SE AGREGO UNA RUTA QUE VA DESDE 8300 A 8324 CON UNA DISTANCIA DE 10.0 KILOMETROSSE AGREGO UNA RUTA QUE VA DESDE 8316 A 8324 CON UNA DISTANCIA DE 15.0 KILOMETROSSE AGREGO LA SOLICITUD: Ciudad destino: 8324 | Ciudad origen: 8300SE AGREGO LA SOLICITUD: Ciudad destino: 8324 | Ciudad origen: 8316SE AGREGO LA CIUDAD [32mCod. Postal: 8300[0m | Ciudad: neuquen | Provincia: nqn
+SE AGREGO LA CIUDAD [32mCod. Postal: 8316[0m | Ciudad: plot | Provincia: nqn
+SE AGREGO LA CIUDAD [32mCod. Postal: 8324[0m | Ciudad: 8324 | Provincia: neuquen
+SE AGREGO UNA RUTA QUE VA DESDE 8300 A 8324 CON UNA DISTANCIA DE 10.0 KILOMETROSSE AGREGO UNA RUTA QUE VA DESDE 8316 A 8324 CON UNA DISTANCIA DE 15.0 KILOMETROS

@@ -1,8 +1,11 @@
 package estructuras;
 
-    public class Lista {
-    public Nodo cabecera;
+import tpo.SolicitudViaje;
+
+public class Lista {
+    private Nodo cabecera;
     private int longitud;
+
     public Lista() {
         this.cabecera = null;
         this.longitud=0;
@@ -175,9 +178,45 @@ package estructuras;
                 }
             }
         }  
-        
-        
     }
+
+    public int buscarPosicionSolicitud(String codDestino){
+        int posicion = 1;
+        if(this.cabecera!=null){
+            Nodo aux = cabecera;
+            boolean seguir = true;
+            while(aux != null && seguir){
+                SolicitudViaje soli = (SolicitudViaje)aux.getElem();
+                if(soli.getCiudadDestino().equals(codDestino)){
+                    seguir = false;
+                } else {
+                    aux = aux.getEnlace();
+                    posicion++;
+                }
+            }
+        }
+        return posicion;
+    }
+
+    public int buscarPosicionSolicitudDe(String codDestino,String identificador){
+        int posicion = 1;
+        if(this.cabecera!=null){
+            Nodo aux = cabecera;
+            boolean seguir = true;
+            while(aux != null && seguir){
+                SolicitudViaje soli = (SolicitudViaje)aux.getElem();
+                String identificadorSoli = soli.getTipoDocumento()+soli.getNumeroDocumento();
+                if(soli.getCiudadDestino().equals(codDestino) && identificadorSoli.equals(identificador)){
+                    seguir = false;
+                } else {
+                    aux = aux.getEnlace();
+                    posicion++;
+                }
+            }
+        }
+        return posicion;
+    }
+
     public void eliminarOcurrencias(Object x) {
         while (cabecera.getElem().equals(x)) {
             cabecera = cabecera.getEnlace();

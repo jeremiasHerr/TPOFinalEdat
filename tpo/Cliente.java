@@ -18,8 +18,8 @@ public class Cliente {
     }
 
     public String toString(){
-        return " | Tipo DNI: "+tipoDni+"DNI: "+numeroDocumento+"Nombre/s: "+nombre+"Apellido/s: "+apellido+
-        "E-mail: "+email+"Numero de telefono: "+telefono+"\n";
+        return tipoDni+": "+numeroDocumento+" | Nombre/s: "+nombre+" | Apellido/s: "+apellido+
+        " | E-mail: "+email+" | Numero de telefono: "+telefono+"\n";
     }
 
     public String getTipoDni() {

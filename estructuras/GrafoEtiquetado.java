@@ -206,7 +206,7 @@ public class GrafoEtiquetado {
     public boolean existeCamino (Object origen, Object destino) {
         boolean exito = false;
         if (!origen.equals(destino) && this.inicio != null) {
-             NodoVert nOrigen = ubicarVertice(origen);
+            NodoVert nOrigen = ubicarVertice(origen);
             NodoVert nDestino = ubicarVertice(destino);
             if (nOrigen != null && nDestino != null) {
                 Lista visitados = new Lista();
