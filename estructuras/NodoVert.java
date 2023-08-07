@@ -2,7 +2,7 @@ package estructuras;
 import tpo.Ciudad;
 public class NodoVert {
     //atributos
-    private Ciudad elem;
+    private Object elem;
     private NodoVert sigVertice;
     private NodoAdy primerAdy;
 
@@ -12,7 +12,7 @@ public class NodoVert {
         this.primerAdy = null;
     }
 
-    public Ciudad getElem(){
+    public Object getElem(){
         return this.elem;
     }
 

@@ -121,15 +121,17 @@ public class Main {
                         //public SolicitudViaje(String fechaSolicitud, String tipoDocumento, int numeroDocumento, int cantMetrosCubicos, 
                         //int cantBultos, String direccionRetiro, String domicilioEntrega, boolean estaPago, String destino,String origen)
                             boolean estaPago = tokens[10] == "T";
-                            int codPostalS = Integer.valueOf(tokens[1]);
+                            int cosPostalOrigen = Integer.valueOf(tokens[1]);
+                            int cosPostalDestino = Integer.valueOf(tokens[2]);
                             SolicitudViaje aux = new SolicitudViaje(tokens[3],tokens[4],Integer.parseInt(tokens[5]),
                             Integer.parseInt(tokens[6]),Integer.parseInt(tokens[7]),tokens[8],tokens[9],estaPago,tokens[2],tokens[1]);
-                            pedidos.asociar((Comparable)codPostalS, aux);
+                            pedidos.asociar(cosPostalOrigen+""+cosPostalDestino, aux);
                             bufferedWriter.write("SE CREO LA SOLICITUD DE "+aux.getTipoDocumento()+": "+aux.getNumeroDocumento()+".\n");
                         break;
                         //es una ruta
                         case "R":
-                            rutas.insertarArco(tokens[1], tokens[2], Double.valueOf(tokens[3]));
+                            System.out.println(rutas.insertarArco(tokens[1], tokens[2], Double.valueOf(tokens[3])));
+                            
                             bufferedWriter.write("SE CREO LA RUTA QUE VA DESDE "+tokens[1]+" A "+tokens[2]+".\n");
                         break;
                         case "P":
@@ -225,6 +227,7 @@ public class Main {
                 System.out.println("tiene elememto" + pedidos.obtenerRangoEntre(codOrigen, codDestino));
                 if(rutas.existeCamino(codOrigen, codDestino) && pedidos.obtenerRangoEntre(codOrigen, codDestino)!=null){
                     espacioNecesario += ((SolicitudViaje)pedidos.obtenerRangoEntre(codOrigen, codDestino)).getCantMetrosCubicos();
+                    System.out.println(codOrigen + " " +codDestino);
                     seguir = true;
                 }
                 k++;
@@ -524,8 +527,6 @@ public class Main {
         +"\n<> 4. Editar la direccion de entrega.\n<> 5. Editar si esta pago."+ANSI_RESET);
     }
 
-    
-
     public static void eliminarPedido(){
         try {
             FileWriter fileWriter = new FileWriter("tpo\\operacionesABM.txt" , true);
@@ -539,7 +540,7 @@ public class Main {
             String ciudadOrigen = sc.next();        
             System.out.println(ANSI_WHITE+"Ingrese la ciudad de destino del pedido (codigo postal): "+ANSI_RESET);
             String ciudadDestino = sc.next();
-            if(pedidos.desasociar((Comparable)ciudadOrigen, ciudadDestino, tipoDni+dni)){
+            if(pedidos.desasociar(ciudadOrigen+""+ciudadDestino, ciudadDestino, tipoDni+dni)){
                 bufferedWriter.write("SE ELIMINO EL PEDIDO DEL CLIENTE "+tipoDni+dni+" QUE IBA DESDE "+ciudadOrigen+" A "+ciudadDestino);
                 System.out.println(ANSI_GREEN+"PEDIDO ELIMINADO CON EXITO"+ANSI_RESET);
             } else {
@@ -549,8 +550,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
-
     }
 
     public static void agregarPedido(){
@@ -563,7 +562,8 @@ public class Main {
             int ciudadOrigen = sc.nextInt();
             System.out.println(ANSI_WHITE+"Ingrese la ciudad destino del pedido (codigo postal): "+ANSI_RESET);
             String ciudadDestino = sc.next();
-            if(rutas.existeCamino(String.valueOf(ciudadOrigen), ciudadDestino)){
+            String auxOrigen = String.valueOf(ciudadOrigen);
+            if(rutas.existeCamino(auxOrigen, ciudadDestino)){
                 System.out.println(ANSI_WHITE+"Ingrese la fecha del pedido: "+ANSI_RESET);
                 String fecha = sc.next();
                 System.out.println(ANSI_WHITE+"Ingrese el tipo DNI del cliente: "+ANSI_RESET);
@@ -583,7 +583,7 @@ public class Main {
                 String respuestaPago = sc.next();
                 boolean estaPago = "SI".equals(respuestaPago.toUpperCase());
                 SolicitudViaje aux = new SolicitudViaje(fecha, tipoDni, dni,metrosCubicos,cantBultos,direccionRetiro,direccionEntrega,estaPago,ciudadDestino,String.valueOf(ciudadOrigen));
-                pedidos.asociar((Comparable)ciudadOrigen, aux);
+                pedidos.asociar(ciudadOrigen+""+ciudadDestino, aux);
                 bufferedWriter.write("SE AGREGO LA SOLICITUD: "+aux.toString());
                 System.out.println(ANSI_GREEN+"EL PEDIDO FUE AGREGADO CON EXITO"+ANSI_RESET);
             } else {

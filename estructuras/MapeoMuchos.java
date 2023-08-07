@@ -3,7 +3,9 @@ package estructuras;
 import tpo.SolicitudViaje;
 
 public class MapeoMuchos {
-    NodoAVLMapeo raiz;
+    private NodoAVLMapeo raiz;
+    private static final String ANSI_RED = "\u001B[31m";
+    private static final String ANSI_RESET = "\u001B[0m";
 
     public MapeoMuchos() {
         this.raiz = null;
@@ -28,12 +30,12 @@ public class MapeoMuchos {
                 toString = toString + ", H.I: " + hijoIzq.getRango().toString();
 
             } else {
-                toString = toString + ", H.I: -";
+                toString = toString + ", H.I: "+ANSI_RED+"SIN HIJO IZQ"+ANSI_RESET;
             }
             if (hijoDer != null) {
                 toString = toString + ", H.D: " + hijoDer.getRango().toString() + "\n";
             } else {
-                toString = toString + ", H.D: -\n";
+                toString = toString + ", H.D: "+ANSI_RED+"SIN HIJO DER\n"+ANSI_RESET;
             }
 
             if (hijoIzq != null) {
@@ -81,7 +83,7 @@ public class MapeoMuchos {
     public Object obtenerRangoEntre(Object dominio, Object unRango){
         Object resultado = null;
         if(this.raiz!=null){
-            resultado = obtenerRangoEntreAux(dominio, unRango,raiz);
+            resultado = obtenerRangoEntreAux(dominio, unRango, raiz);
         }
         return resultado;
     }
@@ -189,21 +191,21 @@ public class MapeoMuchos {
         return resultado;
     }
 
-    public boolean desasociar(Comparable<Object> unDominio, Object unRango, String identificador) {
+    public boolean desasociar(Comparable unDominio, Comparable destino, String identificador) {
         boolean exito = false;
         if (this.raiz != null) {
-            exito = desasociarAux(null, null, this.raiz, unDominio, unRango, identificador);
+            exito = desasociarAux(null, null, this.raiz, unDominio, destino, identificador);
         }
         return exito;
     }
 
     private boolean desasociarAux(NodoAVLMapeo abuelo, NodoAVLMapeo padre, NodoAVLMapeo nAux,
-        Comparable<Object> unDominio, Object unRango, String identificador) {
+        Comparable unDominio, Comparable destino, String identificador) {
         boolean exito = false;
         if (nAux != null) {
-            Comparable<Object> dominioActual = nAux.getDominio(); // clave del nodo actual
+            Comparable dominioActual = nAux.getDominio(); // clave del nodo actual
             if (dominioActual.compareTo(unDominio) == 0) {
-                int posicionEliminar = nAux.getRango().buscarPosicionSolicitudDe((String)unRango, identificador);
+                int posicionEliminar = nAux.getRango().buscarPosicionSolicitudDe((String)destino, identificador);
                 exito = nAux.getRango().eliminar(posicionEliminar);
                 if (nAux.getRango().esVacia() && exito) {
                     if (nAux.getIzquierdo() != null && nAux.getDerecho() != null) {
@@ -286,7 +288,7 @@ public class MapeoMuchos {
         return reemplazo;
     }
 
-    public boolean asociar(Comparable<Object> unDominio, Object unRango) {
+    public boolean asociar(Comparable unDominio, Object unRango) {
         boolean exito = false;
         if (this.raiz != null) {
             this.raiz.recalcularAltura();
@@ -298,14 +300,16 @@ public class MapeoMuchos {
         return exito;
     }
 
-    private boolean asociarAux(NodoAVLMapeo padre, NodoAVLMapeo nAux, Comparable<Object> unDominio, Object unRango) {
+    private boolean asociarAux(NodoAVLMapeo padre, NodoAVLMapeo nAux, Comparable unDominio, Object unRango) {
+        // un dominio es la clave compuesta, primero va el codigo postal de la ciudad origen luego la ciudad destino
         boolean exito = false;
         if (nAux != null) {
-            if (nAux.getDominio().compareTo(unDominio) == 0) {
+            Comparable dominioActual = nAux.getDominio();
+            if (dominioActual.compareTo(unDominio) == 0) {
                 // Ya existe el elemento asi que hay que insertar el nuevo elemento rango
                 nAux.getRango().insertar(unRango, nAux.getRango().longitud() + 1);
                 exito = true;
-            } else if (nAux.getDominio().compareTo(unDominio) < 0) {
+            } else if (dominioActual.compareTo(unDominio) < 0) {
                 if (nAux.getDerecho() != null) {
                     exito = asociarAux(nAux, nAux.getDerecho(), unDominio, unRango);
                 } else {

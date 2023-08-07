@@ -61,7 +61,6 @@ public class Lista {
     public Object recuperar(int pos) {
         Object elem;
         int largo = this.longitud();
-
         if (pos < 1 || pos > largo) {
             elem = null;
         } else {
@@ -80,9 +79,8 @@ public class Lista {
         int pos = -1, i = 1, largo = this.longitud();
         Nodo aux = this.cabecera;
         boolean resultado = false;
-
         while (i <= largo && !resultado && aux != null) {
-            resultado = aux.getElem() == elem;
+            resultado = aux.getElem().equals(elem);
             if (resultado) {
                 pos = i;
             } else {

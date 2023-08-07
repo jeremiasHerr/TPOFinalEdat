@@ -58,7 +58,7 @@ public class GrafoEtiquetado {
 
     private Lista caminoMasCortoKmAux(NodoVert nAux, Object destino, double kmActual, double[]kmResultado ,Lista resultado, Lista listaAux, Lista visitados){
         if (nAux != null){
-            Ciudad elem = nAux.getElem();
+            Ciudad elem = (Ciudad)nAux.getElem();
             visitados.insertar(elem.getCodigoPostal(), visitados.longitud()+1);
             listaAux.insertar(elem.getCodigoPostal(), listaAux.longitud()+1);
             //si llego al destino significa que hay un nuevo camino encontrado y hay que fijarse si es mas corto
@@ -70,7 +70,7 @@ public class GrafoEtiquetado {
             } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
                 NodoAdy ady = nAux.getPrimerAdy();
                 while (ady != null){
-                    if (visitados.localizar(ady.getVertice().getElem().getCodigoPostal()) < 0){
+                    if (visitados.localizar(((Ciudad)(ady.getVertice().getElem())).getCodigoPostal()) < 0){
                         resultado = caminoMasCortoKmAux(ady.getVertice(), destino,kmActual+ady.getEtiqueta(),kmResultado, resultado, listaAux, visitados); 
                     }
                     ady = ady.getSigAdyacente();
@@ -96,7 +96,7 @@ public class GrafoEtiquetado {
 
     private Lista caminoMasCortoAux(NodoVert nAux, Object destino, Lista resultado, Lista listaAux, Lista visitados){
         if (nAux != null){
-            Ciudad elem = nAux.getElem();
+            Ciudad elem = (Ciudad)nAux.getElem();
             visitados.insertar(elem.getCodigoPostal(), visitados.longitud()+1);
             listaAux.insertar(elem.getCodigoPostal(), listaAux.longitud()+1);
             //si llego al destino significa que hay un nuevo camino encontrado y hay que fijarse si es mas corto
@@ -107,7 +107,7 @@ public class GrafoEtiquetado {
             } else { // si no lo encuentra recorre sus adyacentes para buscar el camino
                 NodoAdy ady = nAux.getPrimerAdy();
                 while (ady != null){
-                    if (visitados.localizar(ady.getVertice().getElem().getCodigoPostal()) < 0){
+                    if (visitados.localizar(((Ciudad)(ady.getVertice().getElem())).getCodigoPostal()) < 0){
                         resultado = caminoMasCortoAux(ady.getVertice(), destino, resultado, listaAux, visitados); 
                     }
                     ady = ady.getSigAdyacente();
@@ -219,13 +219,15 @@ public class GrafoEtiquetado {
     private boolean existeCaminoAux (NodoVert nAux, Object destino, Lista visitados) {
         boolean exito = false;
         if(nAux!=null){
-            if(nAux.getElem().getCodigoPostal().equals(destino)){
+            Ciudad elem = (Ciudad)nAux.getElem();
+            if(((String)elem.getCodigoPostal()).equals((String)destino)){
                 exito = true;
+                System.out.println("existe");
             } else {
-                visitados.insertar(nAux.getElem().getCodigoPostal(), visitados.longitud()+1);
+                visitados.insertar((String)elem.getCodigoPostal(), visitados.longitud()+1);
                 NodoAdy aux = nAux.getPrimerAdy();
                 while(!exito && aux!=null){
-                    if(visitados.localizar(aux.getVertice().getElem().getCodigoPostal())<0){
+                    if(visitados.localizar((String)elem.getCodigoPostal())<0){
                         exito = existeCaminoAux(aux.getVertice(), destino, visitados);
                     }
                     aux = aux.getSigAdyacente();
@@ -349,7 +351,7 @@ public class GrafoEtiquetado {
     public boolean eliminarVertice(Object unVertice) {
         boolean exito = false;
         if (inicio != null) {
-            if (inicio.getElem().getCodigoPostal().equals(unVertice)) {
+            if (((Ciudad)inicio.getElem()).getCodigoPostal().equals(unVertice)) {
                  //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
                 eliminarAdyacentesDe(this.inicio.getPrimerAdy(), unVertice);
                 this.inicio = inicio.getSigVertice();
@@ -357,7 +359,7 @@ public class GrafoEtiquetado {
             } else {
                 NodoVert aux = this.inicio;
                 while (aux.getSigVertice() != null && !exito) {
-                    if (aux.getSigVertice().getElem().getCodigoPostal().equals(unVertice)) {
+                    if (((Ciudad)aux.getSigVertice().getElem()).getCodigoPostal().equals(unVertice)) {
                         //mando a eliminar todos los arcos que puedan estar conectados con el vertice que voy a borrar
                         eliminarAdyacentesDe(aux.getSigVertice().getPrimerAdy(), unVertice);
                         aux.setSigVertice(aux.getSigVertice().getSigVertice());
@@ -375,12 +377,12 @@ public class GrafoEtiquetado {
         //este modulo elimina los adyacentes que tengan como destino a unVertice
         while(nAux!=null){
             NodoAdy aux = nAux.getVertice().getPrimerAdy();
-            if(aux.getVertice().getElem().getCodigoPostal().equals(unVertice)){
+            if(((Ciudad)aux.getVertice().getElem()).getCodigoPostal().equals(unVertice)){
                 nAux.getVertice().setPrimerAdy(aux.getSigAdyacente());
             } else {
                 boolean salir = false;
                 while(aux.getSigAdyacente()!=null && !salir){
-                    if(aux.getSigAdyacente().getVertice().getElem().getCodigoPostal().equals(unVertice)){
+                    if(((Ciudad)aux.getSigAdyacente().getVertice().getElem()).getCodigoPostal().equals(unVertice)){
                         aux.setSigAdyacente(aux.getSigAdyacente().getSigAdyacente());
                         salir = true;
                     } else {
@@ -395,7 +397,7 @@ public class GrafoEtiquetado {
     private NodoVert ubicarVertice(Object buscado) {
         // aux que se usa para ver si ya existe el nuevo vertice a ingresar
         NodoVert aux = this.inicio;
-        while (aux != null && !aux.getElem().getCodigoPostal().equals(buscado)) {
+        while (aux != null && !((Ciudad)aux.getElem()).getCodigoPostal().equals(buscado)) {
             aux = aux.getSigVertice();
         }
         return aux;
