@@ -1,5 +1,7 @@
 package estructuras;
 
+import javax.print.attribute.standard.Compression;
+
 import tpo.SolicitudViaje;
 
 public class MapeoMuchos {
@@ -62,11 +64,8 @@ public class MapeoMuchos {
             if(nAux.getDominio().compareTo(dominio)==0){
                 int i = 1, longitud = nAux.getRango().longitud();
                 while(i<=longitud){
-                    System.out.println("sssssssssssss");
-                    System.out.println(((SolicitudViaje)nAux.getRango().recuperar(i)).getCiudadDestino()+ " aaa "+unRango);
                     if(((SolicitudViaje)nAux.getRango().recuperar(i)).getCiudadDestino().equals(unRango)){
                         resultado.insertar((SolicitudViaje)nAux.getRango().recuperar(i), resultado.longitud()+1);
-                        System.out.println("aaaaaaaaa");
                     }
                     i++;
                 }
@@ -91,7 +90,8 @@ public class MapeoMuchos {
     private Object obtenerRangoEntreAux(Object dominio, Object unRango,NodoAVLMapeo nAux) {
         Object resultado = null;
         if(nAux!=null){
-            if(nAux.getDominio().compareTo(dominio)==0){
+            if(((Comparable)nAux.getDominio()).compareTo(dominio) == 0){
+                System.out.println("asd");
                 int i = nAux.getRango().buscarPosicionSolicitud((String) unRango);
                 resultado = nAux.getRango().recuperar(i);
             } else {

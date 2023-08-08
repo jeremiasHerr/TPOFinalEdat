@@ -1,5 +1,8 @@
 
 C;1000;Buenos Aires;Buenos Aires
+C;8300;Neuquen;Neuquen
+C;8200;Plottier;Neuquen
+C;8100;Cipoletti;Neuquen
 C;2000;Rosario;Santa Fe
 C;3000;Santa Fe;Santa Fe
 C;4000;San Miguel de Tucuman;Tucuman
@@ -29,6 +32,8 @@ C;2700;Esperanza;Santa Fe
 C;2800;San Juan;San Juan
 C;2900;Formosa;Formosa
 C;3001;Granadero Baigorria;Santa Fe
+S;8300;8200;15/09/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
+S;8200;8100;15/09/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
 S;5000;8000;15/09/2023;DNI;35678965;13;5;Sarmiento 3400;Roca 2100;T
 S;2000;6000;15/10/2023;DNI;45612378;7;3;Av. Colon 1200;San Martin 800;F
 S;1000;2000;16/03/2023;CUIT;20357896;18;8;Av. Libertador 2500;San Lorenzo 1500;T
@@ -49,6 +54,8 @@ S;9000;6000;23/06/2023;DNI;23659874;21;9;Av. de Mayo 1000;Av. San Martin 1400;T
 S;1000;7000;23/06/2023;DNI;78451236;16;7;Av. Velez Sarsfield 1400;Calle 50 2000;F
 S;2900;8000;24/06/2023;CUIT;32589647;15;6;Av. Pellegrini 800;Av. Mate de Luna 1400;T
 S;3000;9000;24/06/2023;DNI;58741032;10;4;Av. San Martin 800;Av. BelgraF 500;F
+R;8300;8200;713
+R;8200;8100;719
 R;5000;8000;713
 R;2001;2000;719
 R;5000;1000;708

@@ -1,6 +1,5 @@
 package estructuras;
 
-import tpo.Ciudad;
 
 public class Diccionario {
         private static final String ANSI_RED = "\u001B[31m";

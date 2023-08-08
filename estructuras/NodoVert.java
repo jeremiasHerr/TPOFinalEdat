@@ -1,12 +1,12 @@
 package estructuras;
-import tpo.Ciudad;
+
 public class NodoVert {
     //atributos
     private Object elem;
     private NodoVert sigVertice;
     private NodoAdy primerAdy;
 
-    public NodoVert (Ciudad unElem, NodoVert unVertice){
+    public NodoVert (Object unElem, NodoVert unVertice){
         this.elem = unElem;
         this.sigVertice = unVertice;
         this.primerAdy = null;
@@ -16,7 +16,7 @@ public class NodoVert {
         return this.elem;
     }
 
-    public void setElem(Ciudad unElem){
+    public void setElem(Object unElem){
         this.elem = unElem;
     }
 

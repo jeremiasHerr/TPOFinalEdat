@@ -1,7 +1,7 @@
 package estructuras;
 
 public class NodoAVLMapeo {
-    private Comparable dominio;
+    private Comparable<Object> dominio;
     private Lista rango;
     private NodoAVLMapeo izquierdo;
     private NodoAVLMapeo derecho;

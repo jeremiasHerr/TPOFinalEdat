@@ -33,7 +33,6 @@ public class Main {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(pedidos.toString());
     }
 
     public static void menu() throws FileNotFoundException, IOException {
@@ -112,8 +111,7 @@ public class Main {
                             int codPostal = Integer.valueOf(tokens[1]);
                             Ciudad actual = new Ciudad(tokens[1], tokens[2], tokens[3]);
                             ciudades.insertar((Comparable)codPostal, actual); //se debe insertar la ciudad en el diccionario
-                            rutas.insertarVertice(actual); //se debe insertar la ciudad en el grafo etiquetado "rutas" ya que cada vertice es una ciudad
-                            //capaz deberia insertar en pedidos tmb
+                            rutas.insertarVertice(tokens[1]); //se debe insertar la ciudad en el grafo etiquetado "rutas" ya que cada vertice es una ciudad
                             bufferedWriter.write("SE CREO LA CIUDAD "+actual.getNombre()+" Y SE INSERTO EN LAS ESTRUCTURAS NECESARIAS.\n");
                         break;
                         //es una solicitud
@@ -130,8 +128,7 @@ public class Main {
                         break;
                         //es una ruta
                         case "R":
-                            System.out.println(rutas.insertarArco(tokens[1], tokens[2], Double.valueOf(tokens[3])));
-                            
+                            rutas.insertarArco(tokens[1],tokens[2],Double.valueOf(tokens[3]));
                             bufferedWriter.write("SE CREO LA RUTA QUE VA DESDE "+tokens[1]+" A "+tokens[2]+".\n");
                         break;
                         case "P":
@@ -212,19 +209,17 @@ public class Main {
         int cantCiudades = sc.nextInt();
         for (int i = 0; i < cantCiudades; i++) {
             System.out.println("Ingrese una ciudad ("+(i+1)+")");
-            int codPostal = sc.nextInt();
+            String codPostal = sc.next();
             camino.insertar(codPostal, camino.longitud()+1);
         }
         int i = 1, espacioNecesario = 0;
         boolean seguir = true;
         while(i<cantCiudades && seguir && espacioNecesario<=capacidad){
-            Comparable<Object> codOrigen = (Comparable<Object>)camino.recuperar(i);
+            String codOrigen = (String) camino.recuperar(i);
             int k = i+1;
             seguir=false;
-            while(k<=cantCiudades && !seguir){
-                Comparable<Object> codDestino = (Comparable<Object>)camino.recuperar(k);
-                System.out.println(codOrigen + "existe camino: "+codDestino+"   "+rutas.existeCamino(codOrigen, codDestino));
-                System.out.println("tiene elememto" + pedidos.obtenerRangoEntre(codOrigen, codDestino));
+            while(k<=cantCiudades && !seguir) {
+                String codDestino = (String) camino.recuperar(k);
                 if(rutas.existeCamino(codOrigen, codDestino) && pedidos.obtenerRangoEntre(codOrigen, codDestino)!=null){
                     espacioNecesario += ((SolicitudViaje)pedidos.obtenerRangoEntre(codOrigen, codDestino)).getCantMetrosCubicos();
                     System.out.println(codOrigen + " " +codDestino);
@@ -932,8 +927,9 @@ public class Main {
             System.out.println(ANSI_WHITE+"Ingrese el codigo postal de la ciudad que quiere eliminar: "+ANSI_RESET);
             String codigoPostal = sc.nextLine();
             codigoPostal = sc.nextLine();
-            String nombreCiudad = ((Ciudad)ciudades.obtenerDato(codigoPostal)).getNombre();
-            if(ciudades.eliminar(codigoPostal) && rutas.eliminarVertice(codigoPostal)){
+            int aux = Integer.valueOf(codigoPostal);
+            String nombreCiudad = ((Ciudad)ciudades.obtenerDato(aux)).getNombre();
+            if(ciudades.eliminar(aux) && rutas.eliminarVertice(aux)){
                 bufferedWriter.write("SE ELIMINO LA CIUDAD "+nombreCiudad);
                 System.out.println(ANSI_GREEN+"LA CIUDAD FUE ELIMINADA CON EXITO."+ANSI_RESET);
             } else {
@@ -967,7 +963,7 @@ public class Main {
             System.out.println(ANSI_WHITE+"Codigo postal de la ciudad:"+ANSI_RESET);
             codigoPostal = sc.nextInt();
             Ciudad unaCiudad = new Ciudad(String.valueOf(codigoPostal), nombre, provincia);
-            boolean exito = ciudades.insertar(codigoPostal, unaCiudad) && rutas.insertarVertice(unaCiudad);
+            boolean exito = ciudades.insertar(codigoPostal, unaCiudad) && rutas.insertarVertice((codigoPostal));
             if(exito){
                 bufferedWriter.write("SE AGREGO LA CIUDAD "+unaCiudad.toString()+"\n");
                 System.out.println(ANSI_GREEN+"LA CIUDAD FUE AGREGADA CON EXITO."+ANSI_RESET);
